@@ -140,7 +140,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
             ProgressBar(
                 weekTarget = comparableVal, value = barVal, modifier = Modifier
                     .fillMaxWidth()
-                    .height(30.dp),
+                    .height(30.dp).padding(start = 4.dp, end = 4.dp),
                 onItemClick = {
                     isDefaultBar = !isDefaultBar
                 }

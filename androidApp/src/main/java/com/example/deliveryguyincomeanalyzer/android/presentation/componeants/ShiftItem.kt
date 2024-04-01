@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -33,7 +34,8 @@ fun ShiftItem() {
 
     Column(modifier = Modifier
         .clip(MaterialTheme.shapes.medium)
-        .fillMaxWidth(0.75f)
+        .requiredWidth(300.dp)
+        //.fillMaxWidth(1f)
         .background(MaterialTheme.colorScheme.primary), horizontalAlignment = Alignment.CenterHorizontally) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
@@ -44,7 +46,7 @@ fun ShiftItem() {
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(modifier = Modifier

@@ -29,11 +29,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Box(Modifier, contentAlignment = Alignment.Center) {
+                    Box(Modifier, contentAlignment = Alignment.TopCenter) {
 
-                        // ShiftItem()
+                         //ShiftItem()
 
-                        OverViewScreen(Modifier)
+                       OverViewScreen()
                     }
                 }
             }

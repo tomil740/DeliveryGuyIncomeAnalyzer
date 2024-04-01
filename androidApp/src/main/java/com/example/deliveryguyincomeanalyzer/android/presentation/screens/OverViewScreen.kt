@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -31,42 +32,70 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.PlatformArbitrator
+import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.SmallObjectItem
 
 @Composable
-fun OverViewScreen(modifier:Modifier) {
+fun OverViewScreen(modifier:Modifier=Modifier) {
 
-    Box(modifier = modifier
-        .fillMaxWidth()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            MainObjectHeaderItem()
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            item {
+                MainObjectHeaderItem()
 
-            Text(
-                text = "Recent work :",
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+                Text(
+                    text = "Recent work :",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
-            LazyRow {
-                items(7) {
-                    Box(Modifier.padding(start = 4.dp, end = 4.dp)) {
-                        SmallObjectItem(
-                            objectHeader = "Sunday",
-                            hoursComparable = 8f,
-                            hoursValue = 7f,
-                            income = 750f
-                        )
+            item {
+
+                LazyRow {
+                    items(7) {
+                        Box(Modifier.padding(start = 4.dp, end = 4.dp)) {
+                            SmallObjectItem(
+                                objectHeader = "Sunday",
+                                hoursComparable = 8f,
+                                hoursValue = 7f,
+                                income = 750f
+                            )
+                        }
                     }
                 }
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
 
-            Row(modifier=Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.Center) {
-                PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary)
+            item {
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary)
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    items(4) {
+                        Spacer(modifier = Modifier.width(6.dp))
+                        ShiftItem()
+                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+                }
             }
         }
     }
