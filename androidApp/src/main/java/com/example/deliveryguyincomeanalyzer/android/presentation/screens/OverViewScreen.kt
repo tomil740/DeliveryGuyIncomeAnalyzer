@@ -30,70 +30,95 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.PlatformArbitrator
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.SmallObjectItem
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.DeclareBuilderScreenClass
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.ObjectItemScreenClass
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
 
 @Composable
 fun OverViewScreen(modifier:Modifier=Modifier) {
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            item {
-                MainObjectHeaderItem()
+    val navigator = LocalNavigator.currentOrThrow
 
-                Text(
-                    text = "Recent work :",
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        floatingActionButton = {
+            SmallFloatingActionButton(
+                onClick = { navigator.push(DeclareBuilderScreenClass()) },
+                modifier = Modifier
+                    .offset(y = -20.dp)
+                    .size(58.dp),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Filled.Add, "Small floating action button.")
             }
+        }) { paddingValues ->
 
-            item {
+        Box(
+            modifier = modifier.padding(paddingValues)
+                .fillMaxWidth()
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                item {
+                    MainObjectHeaderItem(onMainObjectClick = { navigator.push(ObjectItemScreenClass("March")) },
+                        navigator = navigator, navToPlatformBuilder = {})
 
-                LazyRow {
-                    items(7) {
-                        Box(Modifier.padding(start = 4.dp, end = 4.dp)) {
-                            SmallObjectItem(
-                                objectHeader = "Sunday",
-                                hoursComparable = 8f,
-                                hoursValue = 7f,
-                                income = 750f
-                            )
+                    Text(
+                        text = "Recent work :",
+                        style = MaterialTheme.typography.displaySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(26.dp))
+                }
+
+                item {
+
+                    LazyRow {
+                        items(7) {
+                            Box(Modifier.padding(start = 4.dp, end = 4.dp)) {
+                                SmallObjectItem(
+                                    objectHeader = "Sunday",
+                                    hoursComparable = 8f,
+                                    hoursValue = 7f,
+                                    income = 750f,
+                                    navToObject = {navigator.push(ObjectItemScreenClass(it))}
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            item {
+                item {
 
-                Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(22.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary, navToBuild = {navigator.push(PlatformBuilderScreenClass())})
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-
-            item {
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    items(4) {
-                        Spacer(modifier = Modifier.width(6.dp))
-                        ShiftItem()
-                        Spacer(modifier = Modifier.width(6.dp))
+                item {
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        items(4) {
+                            Spacer(modifier = Modifier.width(6.dp))
+                            ShiftItem()
+                            Spacer(modifier = Modifier.width(6.dp))
+                        }
                     }
                 }
             }

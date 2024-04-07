@@ -24,7 +24,7 @@ import androidx.compose.ui.Alignment
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
-fun ComparedObjectSelector(textColor: Color=MaterialTheme.colorScheme.onPrimary) {
+fun ComparedStatisticsSelector(textColor: Color=MaterialTheme.colorScheme.onPrimary) {
     val platformsLst = listOf<String>("Wolt", "dominos", "Mcdonalds", "KFC", "תן ביס")
     val frameLst = listOf("Total", "Morning", "Noon", "Night")
     val allFrameLst = listOf("Total", "Year", "Month", "Worksession")

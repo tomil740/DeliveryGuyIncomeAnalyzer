@@ -3,9 +3,11 @@ agp = "8.3.1"
 kotlin = "1.9.20"
 compose = "1.5.4"
 compose-compiler = "1.5.4"
-compose-material3 = "1.1.2"
+compose-material3 = "1.2.1"
 androidx-activityCompose = "1.8.0"
 cascade = "2.3.0"
+voyagerVersion = "1.0.0"
+
 
 
 [libraries]
@@ -17,6 +19,10 @@ compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"
 compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 cascade-compose ={module = "me.saket.cascade:cascade-compose",version.ref="cascade"}
+
+navigator = {module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyagerVersion" }
+tabNavigator = {module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyagerVersion" }
+transitions = {module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyagerVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

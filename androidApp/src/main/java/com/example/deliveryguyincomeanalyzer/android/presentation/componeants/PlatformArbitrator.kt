@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,14 +43,29 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary) {
-    val theLst = mutableListOf<String>("Wolt","dominos","Mcdonalds","KFC","תן ביס")
+fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
+    val theLst = mutableListOf<String>("Wolt","dominos","Mcdonalds","KFC","תן ביס","Add +")
 
     var isExpended by remember { mutableStateOf(false) }
 
     val arrowIcon = remember { mutableStateOf(Icons.Default.ArrowDropDown) }
 
+    var isNewPlatform by remember { mutableStateOf(false) }
+
     var theItem by remember { mutableStateOf(" : Wolt") }
+
+
+        if(theItem == " : Add +"){
+            if(context == "Platform Builder")
+                isNewPlatform = true
+            else{
+                isNewPlatform = false
+                navToBuild()
+            }
+        }
+    else{
+        isNewPlatform =false
+        }
 
     if (isExpended) {
         arrowIcon.value = Icons.Default.KeyboardArrowUp
@@ -74,11 +90,12 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary) {
                     color = textColor
                 )
             }
-            ExposedDropdownMenuBox(
-                expanded = isExpended,
-                onExpandedChange = { isExpended = !isExpended },
-            )
-            {
+            if(!isNewPlatform) {
+                ExposedDropdownMenuBox(
+                    expanded = isExpended,
+                    onExpandedChange = { isExpended = !isExpended },
+                )
+                {
                     Row(
                         modifier = Modifier
                             .menuAnchor()
@@ -100,25 +117,29 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary) {
                         )
                     }
 
-                        ExposedDropdownMenu(
-                            expanded = isExpended,
-                            onDismissRequest = { isExpended = false },
-                            modifier = Modifier
-                                .height(150.dp)
-                        ) {
-                            theLst.forEach {
-                                DropdownMenuItem(text = {
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }, onClick = {
-                                    theItem = " : $it"
-                                    isExpended = false
-                                })
+                    ExposedDropdownMenu(
+                        expanded = isExpended,
+                        onDismissRequest = { isExpended = false },
+                        modifier = Modifier
+                            .height(150.dp)
+                    ) {
+                        theLst.forEach {
+                            DropdownMenuItem(text = {
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }, onClick = {
+                                theItem = " : $it"
+                                isExpended = false
+                            })
 
-                            }
+                        }
                     }
+                }
+            }
+            if (isNewPlatform){
+                OutlinedTextField(value = theItem, onValueChange = {theItem = it})
             }
         }
     }
@@ -126,5 +147,5 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary) {
 @Preview
 @Composable
 fun preview() {
-    PlatformArbitrator()
+    PlatformArbitrator(navToBuild = {})
 }

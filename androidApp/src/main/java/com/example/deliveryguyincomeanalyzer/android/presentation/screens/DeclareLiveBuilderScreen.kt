@@ -6,7 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,11 +41,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.DeliveryLiveItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ExtrasTextField
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.VerticalBarProgressItem
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.extraNav.ExtraNavigationIcon
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
+
 /*
 DeclareLiveBuilderScreen :
 This screen implemented a bit different from the classic layout because of questionable use, the rotate on the vertical bar
@@ -62,6 +68,8 @@ the result will be a little bit wired UI object that works in practice but will 
 
 @Composable
 fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier) {
+
+    val navigator = LocalNavigator.currentOrThrow
 
     var showActionOptions by remember { mutableStateOf(false) }
 
@@ -111,51 +119,59 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier) {
         }
     ) { paddingVal->
 
-        Column(modifier.padding(paddingVal)) {
-            MainObjectHeaderItem(isBuilder = true, modifier = modifier)
+        Box(modifier = Modifier.padding(paddingVal),  contentAlignment = Alignment.TopEnd) {
 
-            ExtrasTextField(commonExras = listOf("1", "5", "10", "15", "20"))
 
-            Spacer(modifier = Modifier.height(44.dp))
+            Column(modifier.padding(paddingVal)) {
+                MainObjectHeaderItem(
+                    isBuilder = true,
+                    navToPlatformBuilder = { navigator.push(PlatformBuilderScreenClass()) },
+                    navigator = navigator,
+                    modifier = modifier)
 
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+                ExtrasTextField(commonExras = listOf("1", "5", "10", "15", "20"))
 
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(55) {
-                        DeliveryLiveItem(
-                            theIndex = it,
-                            theValue = 12f,
-                            onDelete = { /*TODO*/ },
-                            modifier = Modifier.size(height = 56.dp, width = 210.dp)
-                        )
-                        Spacer(modifier = Modifier.height(21.dp))
+                Spacer(modifier = Modifier.height(44.dp))
 
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(55) {
+                            DeliveryLiveItem(
+                                theIndex = it,
+                                theValue = 12f,
+                                onDelete = { /*TODO*/ },
+                                modifier = Modifier.size(height = 56.dp, width = 210.dp)
+                            )
+                            Spacer(modifier = Modifier.height(21.dp))
+
+                        }
                     }
+
+                    VerticalBarProgressItem(
+                        barValue = 75f,
+                        comparableValue = 100f,
+                        modifier = Modifier
+                            .size(height = 60.dp, width = 380.dp)
+                            .offset(x = -148.dp, y = -30.dp)
+                    )
+
+                    VerticalBarProgressItem(
+                        barValue = 75f,
+                        comparableValue = 100f,
+                        Modifier
+                            .size(height = 60.dp, width = 380.dp)
+                            .offset(x = 158.dp, y = -30.dp)
+
+                    )
+
                 }
 
-                VerticalBarProgressItem(
-                    barValue = 75f,
-                    comparableValue = 100f,
-                    modifier = Modifier
-                        .size(height = 60.dp, width = 380.dp)
-                        .offset(x = -148.dp, y = -30.dp)
-                )
-
-                VerticalBarProgressItem(
-                    barValue = 75f,
-                    comparableValue = 100f,
-                    Modifier
-                        .size(height = 60.dp, width = 380.dp)
-                        .offset(x = 158.dp, y = -30.dp)
-
-                )
 
             }
-
-
         }
 
     }

@@ -46,28 +46,50 @@ fun ProgressBar(
         Animatable(0f)
     }
 
+    val valueAnimationExtraState = remember {
+        Animatable(0f)
+    }
+
 
     LaunchedEffect(key1 = value, key2 = weekTarget) {
         valueAnimationState.animateTo(
             targetValue = if (weekTarget > 0) {
-                value / weekTarget
+                if (value / weekTarget > 1) {
+                    0.95f
+                } else {
+                    value / weekTarget
+                }
             } else 0f,
             animationSpec = tween(
                 durationMillis = 1350
             )
         )
+        if (valueAnimationState.value == 0.95f) {
+            valueAnimationState.animateTo(
+                targetValue = if (weekTarget > 0) {
+                    if (value / weekTarget > 1) {
+                        1f
+                    } else {
+                        value / weekTarget
+                    }
+                } else 0f,
+                animationSpec = tween(
+                    durationMillis = 5500
+                )
+            )
+        }
     }
 
     Canvas(
         modifier = modifier.clickable { onItemClick() }
     ) {
         drawRoundRect(
-            color =  barColor,
+            color = barColor,
             size = size,
             cornerRadius = CornerRadius(100f)
         )
         drawRoundRect(
-            color =  valueColor,
+            color = valueColor,
             size = Size(
                 width = (valueAnimationState.value)*size.width,
                 height = size.height

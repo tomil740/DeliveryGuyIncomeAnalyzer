@@ -48,5 +48,9 @@ dependencies {
 
     implementation (libs.cascade.compose)
 
+    implementation(libs.tabNavigator)
+    implementation(libs.navigator)
+    implementation(libs.transitions)
+
 
 }

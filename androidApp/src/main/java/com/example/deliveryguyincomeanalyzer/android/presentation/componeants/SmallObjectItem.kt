@@ -2,6 +2,7 @@ package com.example.deliveryguyincomeanalyzer.android.presentation.componeants
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,8 +26,8 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ut
 import java.time.DayOfWeek
 
 @Composable
-fun SmallObjectItem(objectHeader: String, hoursComparable: Float, hoursValue : Float, income: Float) {
-    val modifier = Modifier
+fun SmallObjectItem(objectHeader: String, hoursComparable: Float, hoursValue : Float, income: Float,navToObject:(String)->Unit) {
+    val modifier = Modifier.clickable { navToObject(objectHeader) }
         .fillMaxWidth()
         .padding(start = 19.dp, end = 19.dp)
 
