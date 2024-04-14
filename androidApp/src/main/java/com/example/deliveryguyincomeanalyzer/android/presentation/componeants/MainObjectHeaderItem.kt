@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -33,15 +32,21 @@ fun MainObjectHeaderItem(
     onMainObjectClick:()->Unit={},
     isBuilder:Boolean = false,
     isPlatform:Boolean=false,
-    value1 : Float=0.205f,
-    value2 : Float=0.451f,
-    value3 : Float=0f,
+    pickedPlatform:String="",
+    onPlatformPick:(String)->Unit={},
+    mainBarValue : Float=0.205f,
+    mainBarComparable : Float=0.451f,
+    subValue : Float=0f,
+    subComparable:Float=2f,
     value1Color : Color = Color.Blue,
     value2Color : Color = Color.Red,
     value3Color : Color = Color.Yellow,
     navToPlatformBuilder:()->Unit,
     navToPlatformContext:String = "",
-    navigator: Navigator? ,
+    navigator: Navigator?,
+    perHourValue:Float = 0f, perHourComparable:Float = 0f,
+    perDeliveryValue:Float = 0f, perDeliveryComparable:Float = 0f,
+    perSessionValue:Float = 0f, perSessionComparable:Float = 0f,
     modifier: Modifier = Modifier) {
 
     Box(modifier = modifier
@@ -81,7 +86,9 @@ fun MainObjectHeaderItem(
                 if (isBuilder)
                     PlatformArbitrator(
                         navToBuild = navToPlatformBuilder,
-                        context = navToPlatformContext
+                        context = navToPlatformContext,
+                        pickedPlatform = pickedPlatform,
+                        onPlatformPick = {onPlatformPick(it)}
                     )
                 else {
                     ComparedStatisticsSelector()
@@ -91,9 +98,9 @@ fun MainObjectHeaderItem(
                 Spacer(modifier = Modifier.height(2.dp))
                 ShiftsDivisionBar(
                     modifier = Modifier.fillMaxWidth().height(40.dp),
-                    value1 = value1,
-                    value2 = value2,
-                    value3 = value3,
+                    value1 = mainBarValue,
+                    value2 = mainBarComparable,
+                    value3 = subValue,
                     value1Color = value1Color,
                     value2Color = value2Color,
                     value3Color = value3Color
@@ -101,11 +108,18 @@ fun MainObjectHeaderItem(
                 Spacer(modifier = Modifier.height(32.dp))
             } else {
                 TwoValuesProgressBar(
-                    barVal = 5f,
-                    comparableVal = 8f,
-                    subBarVal = 5f,
-                    subComparableVal = 99f
-                )
+                    barVal = mainBarValue,
+                    comparableVal = mainBarComparable,
+                    subBarVal = subValue,
+                    subComparableVal = subComparable,
+                    perDeliveryValue = perDeliveryValue,
+                    perDeliveryComparable = perDeliveryComparable,
+                    perHourComparable = perHourComparable,
+                    perHourValue = perHourValue,
+                    perSessionValue = perSessionValue,
+                    perSessionComparable =perSessionComparable ,
+                    )
+
             }
         }
         if (navigator != null) {
@@ -122,6 +136,6 @@ fun MainObjectHeaderItem(
 @Composable
 @Preview
 fun thePrev() {
-    MainObjectHeaderItem(navToPlatformBuilder = {},navigator = null)
+    //MainObjectHeaderItem(navToPlatformBuilder = {},navigator = null)
 
 }

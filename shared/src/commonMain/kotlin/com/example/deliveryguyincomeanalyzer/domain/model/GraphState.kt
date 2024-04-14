@@ -1,4 +1,4 @@
-package com.example.deliveryguyincomeanalyzer.android.presentation.core
+package com.example.deliveryguyincomeanalyzer.domain.model
 
 data class GraphState(
     val ogLst:List<Float> ,

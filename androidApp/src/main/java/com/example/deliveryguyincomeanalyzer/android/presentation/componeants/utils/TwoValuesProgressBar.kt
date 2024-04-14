@@ -43,7 +43,10 @@ this function
 
 @Composable
 fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subComparableVal:Float,
-                    isFullBar : Boolean = true,modifier: Modifier = Modifier
+                    isFullBar : Boolean = true,perHourValue:Float = 0f,perHourComparable:Float = 0f,
+                         perDeliveryValue:Float = 0f,perDeliveryComparable:Float = 0f,
+                         perSessionValue:Float = 0f,perSessionComparable:Float = 0f,
+                         modifier: Modifier = Modifier
 ) {
 
     var barpouration =0.9f
@@ -52,8 +55,8 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
 
     var barSize by remember { mutableStateOf(comparableVal) }
     var barValue by remember { mutableStateOf(barVal) }
-    var subSize by remember { mutableStateOf(subComparableVal) }
     var subValue by remember { mutableStateOf(subBarVal) }
+    var subSize by remember { mutableStateOf(subComparableVal) }
 
     if (isFullBar)
         barpouration=1f
@@ -116,7 +119,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 UnitDisplay(
-                    amount = subComparableVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subBarVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Default.AccountBox,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleMedium,
@@ -128,7 +131,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                 )
 
                 UnitDisplay(
-                    amount = subBarVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subComparableVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Filled.Build,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleMedium,
@@ -148,7 +151,8 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                     isDefaultBar = !isDefaultBar
                 }
             )
-            ExpandedDataItem(isExpandet,isDefaultParam =false)
+            ExpandedDataItem(isExpandet,isDefaultParam =false, perDeliveryValue = perDeliveryValue, perDeliveryComparable = perDeliveryComparable, perHourComparable = perHourComparable,
+                perHourValue = perHourValue, perSessionValue = perSessionValue, perSessionComparable =perSessionComparable )
         }
         Box(
             modifier = Modifier

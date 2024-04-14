@@ -37,9 +37,9 @@ fun PlatformBuilderScreen() {
 
     Column {
         MainObjectHeaderItem(objectName = "Platform Builder", isPlatform = true, isBuilder = true,
-            value1 =0.205f,
-            value2 =0.451f,
-            value3 =0.65f,
+            mainBarValue =0.205f,
+            mainBarComparable =0.451f,
+            subValue =0.65f,
             value1Color= Color.Red,
             value2Color=Color.Yellow,
             value3Color =Color.Green,

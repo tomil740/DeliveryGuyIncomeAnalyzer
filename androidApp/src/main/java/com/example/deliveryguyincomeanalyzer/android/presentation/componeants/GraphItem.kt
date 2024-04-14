@@ -24,9 +24,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.DrawGraph
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.GraphTable
-import com.example.deliveryguyincomeanalyzer.android.presentation.core.GraphState
 import com.example.deliveryguyincomeanalyzer.android.presentation.core.TableRatio
 import com.example.deliveryguyincomeanalyzer.android.presentation.core.getRatio
+import com.example.deliveryguyincomeanalyzer.domain.model.GraphState
 
 /*
 GraphItem :
@@ -48,8 +48,8 @@ stay sync to each other and to the screen size
 In order to position point on the graph table we will take the full size (which is the zero point) and subtract the matched point vertically
  */
 @Composable
-fun GraphItem(perHourValueGraphState:GraphState,perHourComparableGraphState:GraphState,perDeliverValueGraphState:GraphState,perDeliverComparableGraphState:GraphState,
-               modifier: Modifier = Modifier) {
+fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState:GraphState, perDeliverValueGraphState:GraphState, perDeliverComparableGraphState:GraphState,
+              modifier: Modifier = Modifier) {
 
     var showSettings by remember { mutableStateOf(false) }
     var isPerHour by remember { mutableStateOf(true) }

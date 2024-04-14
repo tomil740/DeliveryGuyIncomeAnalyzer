@@ -16,7 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,7 +34,7 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.Ar
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.BooleanItemsSwitch
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.GraphItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
-import com.example.deliveryguyincomeanalyzer.android.presentation.core.GraphState
+import com.example.deliveryguyincomeanalyzer.domain.model.GraphState
 
 @Composable
 fun ObjectItemScreen(objectName:String,modifier: Modifier = Modifier) {

@@ -26,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +45,7 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ut
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExtrasTextField(commonExras: List<String>) {
+fun ExtrasTextField(commonExras: List<String>,onSend:(Float)->Unit) {
 
     var theExtra by remember {
         mutableStateOf("")
@@ -159,7 +160,9 @@ fun ExtrasTextField(commonExras: List<String>) {
                     shape = MaterialTheme.shapes.extraLarge
                 )
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {onSend(theExtra.toFloat())
+                    theExtra = ""
+                }) {
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = null,

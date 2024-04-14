@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
+fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={},textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
     val theLst = mutableListOf<String>("Wolt","dominos","Mcdonalds","KFC","תן ביס","Add +")
 
     var isExpended by remember { mutableStateOf(false) }
@@ -52,7 +52,8 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary,nav
 
     var isNewPlatform by remember { mutableStateOf(false) }
 
-    var theItem by remember { mutableStateOf(" : Wolt") }
+    var theItem =//by remember { mutableStateOf(
+     " : $pickedPlatform"//) }
 
 
         if(theItem == " : Add +"){
@@ -97,7 +98,7 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary,nav
                 )
                 {
                     Row(
-                        modifier = Modifier
+                        modifier = Modifier.width(150.dp)
                             .menuAnchor()
                     ) {
 
@@ -130,7 +131,8 @@ fun PlatformArbitrator(textColor:Color = MaterialTheme.colorScheme.onPrimary,nav
                                     style = MaterialTheme.typography.bodyMedium
                                 )
                             }, onClick = {
-                                theItem = " : $it"
+                                //pick and update the UI state accordingly
+                                onPlatformPick(it)
                                 isExpended = false
                             })
 

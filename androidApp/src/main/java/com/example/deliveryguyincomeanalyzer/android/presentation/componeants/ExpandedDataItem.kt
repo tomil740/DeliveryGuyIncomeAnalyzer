@@ -29,6 +29,9 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ut
 
 @Composable
 fun ExpandedDataItem(isExpandet:Boolean, isDefaultParam:Boolean=true,
+                     perHourValue:Float = 0f,perHourComparable:Float = 0f,
+                     perDeliveryValue:Float = 0f,perDeliveryComparable:Float = 0f,
+                     perSessionValue:Float = 0f,perSessionComparable:Float = 0f,
                      barColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
                      valueColor: Color = MaterialTheme.colorScheme.secondaryContainer,
                      textColor:Color =MaterialTheme.colorScheme.onPrimary,) {
@@ -50,8 +53,8 @@ fun ExpandedDataItem(isExpandet:Boolean, isDefaultParam:Boolean=true,
                         Row(Modifier.padding(16.dp)) {
                             CircleProgressItem(
                                 valueHeader = "Per Hour",
-                                barSize = 205f,
-                                barValue = 180f,
+                                barSize = perHourComparable,
+                                barValue = perHourValue,
                                 barColor=barColor,
                                 valueColor=valueColor,
                                 textColor=textColor,
@@ -63,9 +66,9 @@ fun ExpandedDataItem(isExpandet:Boolean, isDefaultParam:Boolean=true,
                     false -> {
                         Row(Modifier.padding(16.dp)) {
                             CircleProgressItem(
-                                valueHeader = "Per Hour",
-                                barSize = 205f,
-                                barValue = 180f,
+                                valueHeader = "Per Delivery",
+                                barSize = perDeliveryComparable,
+                                barValue = perDeliveryValue,
                                 barColor=barColor,
                                 valueColor=valueColor,
                                 textColor=textColor,
@@ -76,9 +79,9 @@ fun ExpandedDataItem(isExpandet:Boolean, isDefaultParam:Boolean=true,
                             Spacer(modifier = Modifier.width(32.dp))
 
                             CircleProgressItem(
-                                valueHeader = "Per Delivery",
-                                barSize = 200f,
-                                barValue = 19f,
+                                valueHeader = "Per Session ",
+                                barSize = perSessionComparable,
+                                barValue = perSessionValue,
                                 barColor=barColor,
                                 valueColor=valueColor,
                                 textColor=textColor,

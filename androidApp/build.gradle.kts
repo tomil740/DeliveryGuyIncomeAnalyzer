@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
@@ -51,6 +52,20 @@ dependencies {
     implementation(libs.tabNavigator)
     implementation(libs.navigator)
     implementation(libs.transitions)
+
+    implementation(libs.kotlinx.datetime)
+
+    implementation("dev.icerock.moko:mvvm-core:0.16.1")
+    implementation("dev.icerock.moko:mvvm-flow:0.16.1")
+
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation("io.insert-koin:koin-compose")
+
+
+
 
 
 }

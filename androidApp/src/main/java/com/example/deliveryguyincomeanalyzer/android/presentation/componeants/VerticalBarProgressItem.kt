@@ -27,7 +27,8 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.core.valuePres
 
 @Composable
 fun VerticalBarProgressItem(barValue: Float,comparableValue:Float,modifier: Modifier,
-                            barColor : Color = MaterialTheme.colorScheme.onPrimaryContainer, valueColor : Color = MaterialTheme.colorScheme.primaryContainer,textColor:Color = MaterialTheme.colorScheme.secondary) {
+                            barColor : Color = MaterialTheme.colorScheme.onPrimaryContainer, valueColor : Color = MaterialTheme.colorScheme.primaryContainer,textColor:Color = MaterialTheme.colorScheme.secondary,
+                            attributeName:String="Extras") {
 
     //with rotate attribute we will stay with the old preRotate dimensions
     //because of that we will apply matched offSet value to get the new start point of the object
@@ -38,7 +39,7 @@ fun VerticalBarProgressItem(barValue: Float,comparableValue:Float,modifier: Modi
         Box(modifier = Modifier.height(400.dp).offset(y=50.dp), contentAlignment = Alignment.BottomCenter) {
             Column(modifier.offset(x=5.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             UnitDisplay(amount = barValue, unitIcon = Icons.Default.Notifications,amountTextStyle=MaterialTheme.typography.titleLarge)
-               Text(text = "Extras", style = MaterialTheme.typography.titleLarge)
+               Text(text = attributeName, style = MaterialTheme.typography.titleLarge)
                 
             }
         }
@@ -54,7 +55,7 @@ fun VerticalBarProgressItem(barValue: Float,comparableValue:Float,modifier: Modi
         Box(modifier = Modifier.height(400.dp).offset(y=-20.dp), contentAlignment = Alignment.TopCenter) {
             Column(modifier.offset(x = 5.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 UnitDisplay(
-                    amount = 200.1f,
+                    amount = comparableValue,
                     unitIcon = Icons.Default.Star,
                     amountTextStyle = MaterialTheme.typography.titleLarge,
                     amountColor = textColor

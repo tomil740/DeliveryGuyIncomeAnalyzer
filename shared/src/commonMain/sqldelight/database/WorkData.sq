@@ -1,0 +1,147 @@
+CREATE TABLE LiveBuilderyState(
+    id INTEGER NOT NULL DEFAULT 0 PRIMARY KEY,
+    startTime TEXT NOT NULL,
+    endTime  TEXT NOT NULL,
+    totalTime REAL NOT NULL,
+    workingPlatform TEXT NOT NULL,
+    baseWage REAL NOT NULL,
+    extras REAL  NOT NULL,
+    delivers INTEGER NOT NULL
+);
+CREATE TABLE WokingPlatform(
+     workingPlatform TEXT NOT NULL  PRIMARY KEY,
+     morningShifts TEXT NOT NULL ,
+     morningShiftE TEXT NOT NULL,
+     noonShiftS TEXT NOT NULL,
+     noonShiftE TEXT NOT NULL,
+     eveningShiftS TEXT NOT NULL,
+     eveningShiftE TEXT NOT NULL,
+     baseSalary  REAL  NOT NULL
+);
+CREATE TABLE WorkDeclare(
+     workDeclareId TEXT NOT NULL DEFAULT '0' PRIMARY KEY,
+     endDateTime TEXT NOT NULL,
+     time REAL  NOT NULL,
+     extraIncome REAL NOT NULL,
+     baseIncome REAL NOT NULL ,
+     deliveries INTEGER NOT NULL,
+     month TEXT NOT NULL,
+     workingPlatform TEXT NOT NULL,
+     FOREIGN KEY (workingPlatform) REFERENCES WokingPlatform(workingPlatform)
+);
+CREATE TABLE DataPerHour(
+     id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
+     workDeclareId TEXT NOT NULL ,
+     tip REAL NOT NULL,
+     base REAL NOT NULL,
+     deliveries REAL NOT NULL ,
+     hour TEXT NOT NULL ,
+     shiftId INTEGER NOT NULL,
+     FOREIGN KEY (shiftId) REFERENCES Shift(shiftId),
+     FOREIGN KEY (workDeclareId) REFERENCES WorkDeclare(workDeclareId)
+);
+CREATE TABLE  Shift(
+     shiftId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+     shiftType INTEGER NOT NULL,
+     time INTEGER NOT NULL,
+     baseIncome REAL NOT NULL,
+     extraIncome REAL NOT NULL,
+     deliveries INTEGER NOT NULL,
+     workDeclareId TEXT NOT NULL,
+     FOREIGN KEY (workDeclareId) REFERENCES WorkDeclare(workDeclareId)
+);
+CREATE TABLE  LiveDeliveryItem(
+     itemId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+     time  TEXT NOT NULL,
+     extra REAL NOT NULL,
+     liveDeliveryState INTEGER NOT NULL
+);
+
+insertWorkDeclare:
+    INSERT OR REPLACE
+    INTO WorkDeclare(
+        workDeclareId,
+        endDateTime,
+         time ,
+          extraIncome,
+          baseIncome  ,
+          deliveries,
+          month,
+          workingPlatform
+    )
+    VALUES(?, ?, ?,?,?,?,?,?);
+
+    insertShift:
+        INSERT OR REPLACE
+        INTO Shift(
+           shiftType,
+           time,
+           baseIncome,
+           extraIncome,
+           deliveries,
+           workDeclareId
+        )
+        VALUES( ?, ?,  ?,?,?,?);
+
+    insertDataPerHour:
+           INSERT OR REPLACE
+           INTO DataPerHour(
+                workDeclareId ,
+                tip ,
+                base,
+                deliveries,
+                hour ,
+                shiftId
+                )
+           VALUES(  ?,  ?,?,?,?,?);
+
+    insertLiveBuilderState:
+            INSERT OR REPLACE
+            INTO LiveBuilderyState(
+                   id,
+                   startTime,
+                   endTime,
+                   totalTime,
+                   workingPlatform,
+                   baseWage,
+                   extras,
+                   delivers
+            )
+            VALUES(  0,?,  ?,?,?,?,?,?);
+
+    insertLiveDeliveryItem:
+                INSERT OR REPLACE
+                INTO LiveDeliveryItem(
+                     time ,
+                     extra,
+                     liveDeliveryState
+                )
+                VALUES(  ?,  ?,0);
+
+    getLiveBuilderState:
+        SELECT * FROM LiveBuilderyState WHERE id = 0;
+
+    getLiveDeliveryItems:
+         SELECT * FROM LiveDeliveryItem ORDER BY itemId DESC;
+
+    deleteLiveDeliveryItems:
+        DELETE FROM LiveDeliveryItem;
+
+    deleteLiveBuilderState:
+            DELETE FROM LiveBuilderyState;
+
+    getLastShift:
+         SELECT * FROM Shift ORDER BY shiftId DESC LIMIT 1;
+
+    getLastWorkDeclare:
+            SELECT * FROM WorkDeclare ORDER BY workDeclareId DESC LIMIT 1;
+
+    getShiftsByWorkDeclareId:
+        SELECT * FROM Shift WHERE workDeclareId = ?;
+
+    getDataPerHourByShiftId:
+            SELECT * FROM DataPerHour WHERE shiftId = ?;
+
+    getDataPerHourByWorkDeclareId:
+            SELECT * FROM DataPerHour WHERE workDeclareId = ?;
+
