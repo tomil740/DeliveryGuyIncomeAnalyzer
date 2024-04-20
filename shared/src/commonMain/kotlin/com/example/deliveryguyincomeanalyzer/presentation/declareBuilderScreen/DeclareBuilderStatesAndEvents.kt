@@ -1,8 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen
 
-import com.example.deliveryguyincomeanalyzer.domain.model.WorkingPlatform
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
-import com.example.deliveryguyincomeanalyzer.domain.useCase.DeleteLiveBuilderState
 
 data class DeclareBuilderStatesAndEvents(
     val uiState : DeclareBuilderUiState,

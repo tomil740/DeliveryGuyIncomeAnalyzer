@@ -1,7 +1,6 @@
-package com.example.deliveryguyincomeanalyzer.domain.model
+package com.example.deliveryguyincomeanalyzer.domain.model.theModels
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
 
 data class WorkingPlatform (
     val name : String,

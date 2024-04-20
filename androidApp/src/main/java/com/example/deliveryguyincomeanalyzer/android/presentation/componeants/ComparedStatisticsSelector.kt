@@ -20,20 +20,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
-fun ComparedStatisticsSelector(textColor: Color=MaterialTheme.colorScheme.onPrimary) {
-    val platformsLst = listOf<String>("Wolt", "dominos", "Mcdonalds", "KFC", "תן ביס")
-    val frameLst = listOf("Total", "Morning", "Noon", "Night")
-    val allFrameLst = listOf("Total", "Year", "Month", "Worksession")
+fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={},onOpenArchiveMenu:()->Unit={},comparableName:String="April 2024, Any",textColor: Color=MaterialTheme.colorScheme.onPrimary) {
+    val firstMenu = listOf<String>("MyStatistics","GeneralStatistics")
+    val platformsLst = listOf<String>("All","Wolt", "dominos", "Mcdonalds", "KFC", "תן ביס")
 
     var isExpended by remember { mutableStateOf(false) }
 
     val arrowIcon = remember { mutableStateOf(Icons.Default.ArrowDropDown) }
 
-    var theItem by remember { mutableStateOf("Total->Total") }
+    var theItem by remember { mutableStateOf(comparableName) }
+
+    LaunchedEffect(key1 = comparableName) {
+        theItem=comparableName
+    }
 
     if (isExpended) {
         arrowIcon.value = Icons.Default.KeyboardArrowUp
@@ -58,7 +62,7 @@ fun ComparedStatisticsSelector(textColor: Color=MaterialTheme.colorScheme.onPrim
             Row(modifier = Modifier.clickable { isExpended = !isExpended }) {
                 Text(
                     text = ":$theItem",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .offset(y = -2.dp),
                     color = MaterialTheme.colorScheme.onPrimary
@@ -77,28 +81,16 @@ fun ComparedStatisticsSelector(textColor: Color=MaterialTheme.colorScheme.onPrim
             onDismissRequest = { isExpended = false },
             modifier = Modifier
         ) {
-            DropdownMenuItem(
-                text = { Text(text = "Total") },
-                children = {
-                    for (i in allFrameLst) {
-                        DropdownMenuItem(
-                            text = { Text(text = i) },
-                            onClick = {
-                                isExpended = false
-                                theItem = "Total->$i"
-                            }
-                        )
-                    }
-                }
-            )
-            for (i in platformsLst) {
+
+            for (i in firstMenu) {
                 DropdownMenuItem(
                     text = { Text(text = i) },
                     children = {
-                        for (t in frameLst) {
+                        for (t in platformsLst) {
                             DropdownMenuItem(
                                 text = { Text(text = t) },
                                 onClick = {
+                                    onCloseArchiveMenu()
                                     isExpended = false
                                     theItem = "$i->$t"
                                 }
@@ -107,6 +99,11 @@ fun ComparedStatisticsSelector(textColor: Color=MaterialTheme.colorScheme.onPrim
                     }
                 )
             }
+            DropdownMenuItem(text = { Text(text = "Archive") }
+                , onClick = {
+                    isExpended = false
+                    onOpenArchiveMenu()
+                })
         }
     }
 }

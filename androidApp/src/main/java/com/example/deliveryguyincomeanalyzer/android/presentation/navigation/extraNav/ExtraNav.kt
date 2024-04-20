@@ -59,7 +59,7 @@ fun ExtraNavigationIcon(navigator: Navigator  , modifier: Modifier=Modifier) {
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }, onClick = {
-                    navigator?.push(ObjectItemScreenClass(objectName = "Archive"))
+                    navigator?.push(ObjectItemScreenClass())
                     isExpended = false
                 })
                 DropdownMenuItem(text = {
@@ -77,7 +77,7 @@ fun ExtraNavigationIcon(navigator: Navigator  , modifier: Modifier=Modifier) {
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }, onClick = {
-                    navigator?.push(ObjectItemScreenClass(objectName = "Object comparesor"))
+                    navigator?.push(ObjectItemScreenClass())
                     isExpended = false
                 })
                 DropdownMenuItem(text = {
@@ -86,7 +86,7 @@ fun ExtraNavigationIcon(navigator: Navigator  , modifier: Modifier=Modifier) {
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }, onClick = {
-                    navigator?.push(ObjectItemScreenClass(objectName = "Object comparesor"))
+                    navigator?.push(ObjectItemScreenClass())
                     isExpended = false
                 })
 

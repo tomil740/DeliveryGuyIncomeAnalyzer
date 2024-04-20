@@ -1,7 +1,7 @@
 package com.example.deliveryguyincomeanalyzer.domain.useCase
 
 import com.example.deliveryguyincomeanalyzer.domain.Repository
-import com.example.deliveryguyincomeanalyzer.domain.model.WorkSessionSum
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
 
 /*
 InsertWorkDeclare
@@ -9,7 +9,7 @@ Will get the builder that data (that all most matched to the basic declare entit
 will implement those in the entity attribute and return the ned declare entity object id
  */
 class InsertWorkDeclare(val repository: Repository) {
-    suspend operator fun invoke(theDeclare: WorkSessionSum) {
+    suspend operator fun invoke(theDeclare: SumObj) {
         repository.insertWorkDeclare(theDeclare)
     }
 }

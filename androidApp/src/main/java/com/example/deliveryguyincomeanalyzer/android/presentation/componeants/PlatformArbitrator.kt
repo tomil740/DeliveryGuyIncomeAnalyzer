@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={},textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
+fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatformPick:(String)->Unit={},textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
     val theLst = mutableListOf<String>("Wolt","dominos","Mcdonalds","KFC","תן ביס","Add +")
 
     var isExpended by remember { mutableStateOf(false) }
@@ -52,8 +52,8 @@ fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={}
 
     var isNewPlatform by remember { mutableStateOf(false) }
 
-    var theItem =//by remember { mutableStateOf(
-     " : $pickedPlatform"//) }
+    var theItem =
+     " : $pickedPlatform"
 
 
         if(theItem == " : Add +"){
@@ -79,17 +79,19 @@ fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={}
 
 
         Row {
-            Column() {
-                Text(
-                    text = "Working",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = textColor
-                )
-                Text(
-                    text = "platform",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = textColor
-                )
+            if (showHeader) {
+                Column() {
+                    Text(
+                        text = "Working",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = textColor
+                    )
+                    Text(
+                        text = "platform",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = textColor
+                    )
+                }
             }
             if(!isNewPlatform) {
                 ExposedDropdownMenuBox(
@@ -133,6 +135,7 @@ fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={}
                             }, onClick = {
                                 //pick and update the UI state accordingly
                                 onPlatformPick(it)
+                                //theItem= ":$it"
                                 isExpended = false
                             })
 
@@ -141,7 +144,7 @@ fun PlatformArbitrator(pickedPlatform:String="",onPlatformPick:(String)->Unit={}
                 }
             }
             if (isNewPlatform){
-                OutlinedTextField(value = theItem, onValueChange = {theItem = it})
+               OutlinedTextField(value = theItem, onValueChange = {theItem = it})
             }
         }
     }

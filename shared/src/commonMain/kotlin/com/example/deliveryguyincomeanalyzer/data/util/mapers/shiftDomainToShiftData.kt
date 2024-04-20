@@ -14,6 +14,7 @@ fun shiftDomainToShiftData(shift: ShiftDomain,workDeclareId:String):database.Shi
 
     return database.Shift(
         baseIncome = shift.baseIncome.toDouble(), shiftType = shiftType, time = shift.time.toLong(),
-        extraIncome = shift.extraIncome.toDouble(), deliveries = shift.delivers.toLong(), workDeclareId = workDeclareId, shiftId = 0
+        extraIncome = shift.extraIncome.toDouble(), deliveries = shift.delivers.toLong(), workDeclareId = workDeclareId, shiftId = 0,
+        startTime = shift.startTime.toString(), endTime = shift.endTime.toString()
     )
 }

@@ -10,6 +10,7 @@ CREATE TABLE LiveBuilderyState(
 );
 CREATE TABLE WokingPlatform(
      workingPlatform TEXT NOT NULL  PRIMARY KEY,
+     workingZone TEXT NOT NULL,
      morningShifts TEXT NOT NULL ,
      morningShiftE TEXT NOT NULL,
      noonShiftS TEXT NOT NULL,
@@ -43,6 +44,8 @@ CREATE TABLE DataPerHour(
 CREATE TABLE  Shift(
      shiftId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
      shiftType INTEGER NOT NULL,
+     startTime TEXT NOT NULL ,
+     endTime TEXT NOT NULL ,
      time INTEGER NOT NULL,
      baseIncome REAL NOT NULL,
      extraIncome REAL NOT NULL,
@@ -75,13 +78,15 @@ insertWorkDeclare:
         INSERT OR REPLACE
         INTO Shift(
            shiftType,
+           startTime,
+           endTime,
            time,
            baseIncome,
            extraIncome,
            deliveries,
            workDeclareId
         )
-        VALUES( ?, ?,  ?,?,?,?);
+        VALUES( ?, ?,?,?,  ?,?,?,?);
 
     insertDataPerHour:
            INSERT OR REPLACE
@@ -136,6 +141,9 @@ insertWorkDeclare:
     getLastWorkDeclare:
             SELECT * FROM WorkDeclare ORDER BY workDeclareId DESC LIMIT 1;
 
+    getFirstWorkDeclare:
+           SELECT * FROM WorkDeclare ORDER BY workDeclareId ASC LIMIT 1;
+
     getShiftsByWorkDeclareId:
         SELECT * FROM Shift WHERE workDeclareId = ?;
 
@@ -144,4 +152,13 @@ insertWorkDeclare:
 
     getDataPerHourByWorkDeclareId:
             SELECT * FROM DataPerHour WHERE workDeclareId = ?;
+
+    getAllWorkDeclareData:
+                SELECT * FROM WorkDeclare ORDER BY workDeclareId DESC;
+
+    getAllShiftDataByType:
+            SELECT * FROM Shift WHERE shiftType=? ORDER BY shiftId DESC;
+
+    getMonthData:
+         SELECT * FROM WorkDeclare WHERE month=:theMonth ORDER BY workDeclareId DESC;
 

@@ -1,5 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,7 +49,6 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                          perSessionValue:Float = 0f,perSessionComparable:Float = 0f,
                          modifier: Modifier = Modifier
 ) {
-
     var barpouration =0.9f
     var isDefaultBar by remember { mutableStateOf(false) }
     var isExpandet by remember { mutableStateOf(false) }
@@ -57,6 +57,13 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
     var barValue by remember { mutableStateOf(barVal) }
     var subValue by remember { mutableStateOf(subBarVal) }
     var subSize by remember { mutableStateOf(subComparableVal) }
+
+    LaunchedEffect(key1 = comparableVal , key2 = barVal) {
+        barSize = comparableVal
+        barValue= barVal
+        subValue = subBarVal
+        subSize= subComparableVal
+    }
 
     if (isFullBar)
         barpouration=1f
@@ -91,7 +98,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
             ) {
                 //as for now I pass this behaviour to the unit display , at future probably will nav to the specific value analytics
                 UnitDisplay(
-                    amount = barVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = barValue.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Default.AccountBox,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleLarge,
@@ -103,7 +110,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                 )
 
                 UnitDisplay(
-                    amount = comparableVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = barSize.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Default.Notifications,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleLarge,
@@ -119,7 +126,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 UnitDisplay(
-                    amount = subBarVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subValue.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Default.AccountBox,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleMedium,
@@ -131,7 +138,7 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
                 )
 
                 UnitDisplay(
-                    amount = subComparableVal.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subSize.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Filled.Build,
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextStyle = MaterialTheme.typography.titleMedium,
@@ -144,9 +151,10 @@ fun TwoValuesProgressBar(barVal:Float,comparableVal:Float,subBarVal:Float,subCom
             Spacer(modifier = Modifier.height(6.dp))
 
             ProgressBar(
-                weekTarget = comparableVal, value = barVal, modifier = Modifier
+                weekTarget = barSize, value = barValue, modifier = Modifier
                     .fillMaxWidth()
-                    .height(30.dp).padding(start = 4.dp, end = 4.dp),
+                    .height(30.dp)
+                    .padding(start = 4.dp, end = 4.dp),
                 onItemClick = {
                     isDefaultBar = !isDefaultBar
                 }

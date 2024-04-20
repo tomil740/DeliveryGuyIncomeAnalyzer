@@ -26,7 +26,7 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ut
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.GraphTable
 import com.example.deliveryguyincomeanalyzer.android.presentation.core.TableRatio
 import com.example.deliveryguyincomeanalyzer.android.presentation.core.getRatio
-import com.example.deliveryguyincomeanalyzer.domain.model.GraphState
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.GraphState
 
 /*
 GraphItem :
@@ -48,7 +48,7 @@ stay sync to each other and to the screen size
 In order to position point on the graph table we will take the full size (which is the zero point) and subtract the matched point vertically
  */
 @Composable
-fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState:GraphState, perDeliverValueGraphState:GraphState, perDeliverComparableGraphState:GraphState,
+fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState: GraphState, perDeliverValueGraphState: GraphState, perDeliverComparableGraphState: GraphState,
               modifier: Modifier = Modifier) {
 
     var showSettings by remember { mutableStateOf(false) }
@@ -80,11 +80,11 @@ fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState:Gr
 
     LaunchedEffect(key1 = isPerHour) {
 
-        if (!isPerHour) {
+        if (isPerHour) {
             graphValueState = perHourValueGraphState
             graphComparableState = perHourComparableGraphState
         }
-        if (isPerHour) {
+        if (!isPerHour) {
             graphValueState = perDeliverValueGraphState
             graphComparableState = perDeliverComparableGraphState
         }

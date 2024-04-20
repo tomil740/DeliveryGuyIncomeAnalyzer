@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -96,7 +97,10 @@ fun GraphTable(columnsTable: TableRatio, rows:Int, backgroundColor: Color, barsC
 
         val p = 6f*1.dp
         for (i in 0..rows) {
-            var theText = "${(startTime+i)}"
+            var theMark = startTime+i
+            if(theMark > 23)
+                theMark-=24
+            var theText = "${(theMark)}"
             if(theText.length < 2)
                 theText ="0$theText"
 
@@ -135,12 +139,15 @@ fun GraphTable(columnsTable: TableRatio, rows:Int, backgroundColor: Color, barsC
                         offset = DpOffset(y= (30).dp,x=0.dp)
                     ) {
 
-                        for (i in startTimeOptionLst){
+                        for (f in startTimeOptionLst){
+                            var theOption = f
+                            if (theOption> 23)
+                                theOption-=24
                             DropdownMenuItem(text = {
-                                Text(text = "$i:00")
+                                Text(text = "$theOption:00")
                             }, onClick = {
                                 startTimeMenu = false
-                                onStartTime(i)
+                                onStartTime(f)
                             })
                         }
                     }
@@ -171,12 +178,15 @@ fun GraphTable(columnsTable: TableRatio, rows:Int, backgroundColor: Color, barsC
                         offset = DpOffset(y= (30).dp,x=0.dp)
                     ) {
 
-                        for (i in endTimeOptionLst){
+                        for (f in endTimeOptionLst){
+                            var theOption = f
+                            if (theOption> 23)
+                                theOption-=24
                             DropdownMenuItem(text = {
-                                Text(text = "$i:00")
+                                Text(text = "$theOption:00")
                             }, onClick = {
                                 endTimeMenu = false
-                                onEndTime(i)
+                                onEndTime(f)
                             })
                         }
                     }

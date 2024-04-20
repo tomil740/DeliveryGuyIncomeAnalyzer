@@ -25,29 +25,29 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.ShiftsDivisionBar
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.TwoValuesProgressBar
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.extraNav.ExtraNavigationIcon
+import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObjectHeaderItemData
 
 @Composable
 fun MainObjectHeaderItem(
-    objectName: String = "March",
-    onMainObjectClick:()->Unit={},
+    mainObjectHeaderItemData: MainObjectHeaderItemData,
+    onPlatformPick:(String)->Unit,
+    onMainObjectClick:(String)->Unit,
     isBuilder:Boolean = false,
     isPlatform:Boolean=false,
-    pickedPlatform:String="",
-    onPlatformPick:(String)->Unit={},
-    mainBarValue : Float=0.205f,
-    mainBarComparable : Float=0.451f,
-    subValue : Float=0f,
-    subComparable:Float=2f,
     value1Color : Color = Color.Blue,
     value2Color : Color = Color.Red,
     value3Color : Color = Color.Yellow,
-    navToPlatformBuilder:()->Unit,
+    navToPlatformBuilder:()->Unit={},
     navToPlatformContext:String = "",
     navigator: Navigator?,
-    perHourValue:Float = 0f, perHourComparable:Float = 0f,
-    perDeliveryValue:Float = 0f, perDeliveryComparable:Float = 0f,
-    perSessionValue:Float = 0f, perSessionComparable:Float = 0f,
     modifier: Modifier = Modifier) {
+
+    /*
+    ToDo:
+    need to define two Ui host states to host the picked graph values
+    in order to preforme an wwitch on user click ...
+     */
+
 
     Box(modifier = modifier
         , contentAlignment = Alignment.TopEnd) {
@@ -63,17 +63,24 @@ fun MainObjectHeaderItem(
                 )
                 .background(MaterialTheme.colorScheme.primary)
         ) {
-
-            Text(
-                text = "$objectName OverView",
-                style = MaterialTheme.typography.titleLarge,
-                modifier =
-                Modifier.clickable { onMainObjectClick() }
-                    .fillMaxWidth()
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(start = 12.dp, end = 40.dp),
-                color = MaterialTheme.colorScheme.onPrimary
-            )
+            Row {
+                Text(
+                    text =  mainObjectHeaderItemData.objectName,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier =
+                    Modifier.clickable { onMainObjectClick(mainObjectHeaderItemData.objectName) }//need to set some navigation function ore somthing  }
+                        // .align(alignment = Alignment.CenterHorizontally)
+                        .padding(start = 12.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                PlatformArbitrator(
+                    showHeader = false,
+                    navToBuild = navToPlatformBuilder,
+                    context = navToPlatformContext,
+                    pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
+                    onPlatformPick = { onPlatformPick(it) }
+                )
+            }
 
             Spacer(modifier = Modifier.height(2.dp))
 
@@ -87,20 +94,20 @@ fun MainObjectHeaderItem(
                     PlatformArbitrator(
                         navToBuild = navToPlatformBuilder,
                         context = navToPlatformContext,
-                        pickedPlatform = pickedPlatform,
+                        pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
                         onPlatformPick = {onPlatformPick(it)}
                     )
                 else {
-                    ComparedStatisticsSelector()
+                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()}, onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()}, comparableName =mainObjectHeaderItemData.archiveComparableName )
                 }
             }
             if (isPlatform) {
                 Spacer(modifier = Modifier.height(2.dp))
                 ShiftsDivisionBar(
                     modifier = Modifier.fillMaxWidth().height(40.dp),
-                    value1 = mainBarValue,
-                    value2 = mainBarComparable,
-                    value3 = subValue,
+                    value1 = mainObjectHeaderItemData.mainBarValue,
+                    value2 = mainObjectHeaderItemData.mainBarComparable,
+                    value3 = mainObjectHeaderItemData.subValue,
                     value1Color = value1Color,
                     value2Color = value2Color,
                     value3Color = value3Color
@@ -108,16 +115,17 @@ fun MainObjectHeaderItem(
                 Spacer(modifier = Modifier.height(32.dp))
             } else {
                 TwoValuesProgressBar(
-                    barVal = mainBarValue,
-                    comparableVal = mainBarComparable,
-                    subBarVal = subValue,
-                    subComparableVal = subComparable,
-                    perDeliveryValue = perDeliveryValue,
-                    perDeliveryComparable = perDeliveryComparable,
-                    perHourComparable = perHourComparable,
-                    perHourValue = perHourValue,
-                    perSessionValue = perSessionValue,
-                    perSessionComparable =perSessionComparable ,
+                    barVal = mainObjectHeaderItemData.mainBarValue,
+                    comparableVal = mainObjectHeaderItemData.mainBarComparable,
+                    subBarVal = mainObjectHeaderItemData.subValue,
+                    subComparableVal = mainObjectHeaderItemData.subComparable,
+                    perDeliveryValue = mainObjectHeaderItemData.perDeliveryValue,
+                    perDeliveryComparable = mainObjectHeaderItemData.perDeliveryComparable,
+                    perHourComparable = mainObjectHeaderItemData.perHourComparable,
+                    perHourValue = mainObjectHeaderItemData.perHourValue,
+                    //should be optional according to the object type , in order to implemnt the matched data type
+                    perSessionValue =mainObjectHeaderItemData.subSumAverageIncome,
+                    perSessionComparable =10005f ,
                     )
 
             }

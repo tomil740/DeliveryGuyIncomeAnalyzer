@@ -1,7 +1,7 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.componeants
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -34,13 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.CircleProgressItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.ProgressBar
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.UnitDisplay
 import java.math.RoundingMode
 
 @Composable
-fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float,subSizeParam:Float,subValueParam:Float,modifier: Modifier=Modifier) {
+fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
+                ,subSizeParam:Float, subValueParam:Float,onHeaderClick : () ->Unit
+                ,modifier: Modifier=Modifier) {
 
     var isDefaultBar by remember { mutableStateOf(true) }
     var isExpandet by remember { mutableStateOf(false) }
@@ -48,6 +48,16 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float,subSize
     var barValue by remember { mutableStateOf(barValueParam) }
     var subSize by remember { mutableStateOf(subSizeParam) }
     var subValue by remember { mutableStateOf(subValueParam) }
+
+    LaunchedEffect(key1 = objectName) {
+         isDefaultBar =true
+         isExpandet =false
+         barSize =barSizeParam
+         barValue =barValueParam
+         subSize=subSizeParam
+         subValue=subValueParam
+
+    }
 
     var itemSize by remember { mutableStateOf(0.dp) }
     val density = LocalDensity.current
@@ -79,12 +89,15 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float,subSize
         ) {
 
             Row(
-                Modifier.fillMaxWidth().padding(top = 4.dp),
+                Modifier
+                    .clickable { onHeaderClick() }
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = objectName + " :",
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
@@ -153,8 +166,10 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float,subSize
             ProgressBar(
                 weekTarget = barSize,
                 value = barValue,
-                modifier = Modifier.fillMaxWidth(0.9f)
-                    .height(30.dp).align(Alignment.CenterHorizontally),
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(30.dp)
+                    .align(Alignment.CenterHorizontally),
                 onItemClick = {
                     isDefaultBar = !isDefaultBar
                 },
@@ -169,7 +184,9 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float,subSize
         }
 
         Box(
-            modifier = modifier.fillMaxWidth().height(height = itemSize.value.dp + 38.dp),
+            modifier = modifier
+                .fillMaxWidth()
+                .height(height = itemSize.value.dp + 38.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
 

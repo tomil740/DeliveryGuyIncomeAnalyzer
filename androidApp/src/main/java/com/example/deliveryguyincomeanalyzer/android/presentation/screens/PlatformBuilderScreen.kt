@@ -20,6 +20,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftBuilderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.utils.BasicWageBuilder
+import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObjectHeaderItemData
 
 @Composable
 fun PlatformBuilderScreen() {
@@ -36,16 +37,17 @@ fun PlatformBuilderScreen() {
 
 
     Column {
-        MainObjectHeaderItem(objectName = "Platform Builder", isPlatform = true, isBuilder = true,
-            mainBarValue =0.205f,
-            mainBarComparable =0.451f,
-            subValue =0.65f,
+        MainObjectHeaderItem(mainObjectHeaderItemData = MainObjectHeaderItemData(),
+            isPlatform = true, isBuilder = true,
             value1Color= Color.Red,
             value2Color=Color.Yellow,
             value3Color =Color.Green,
             navToPlatformBuilder = {},
             navToPlatformContext = "Platform Builder",
-            navigator = navigator
+            navigator = navigator,
+            onPlatformPick = {},
+            onMainObjectClick = {},
+
         )
 
         Spacer(modifier = Modifier.height(26.dp))

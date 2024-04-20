@@ -37,9 +37,8 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.Ma
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.VerticalBarProgressItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.OverViewScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
+import com.example.deliveryguyincomeanalyzer.domain.model.util.uiSubModelMapers.sumObjectToMainObjectHeaderItemData
 import com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen.DeclareBuilderStatesAndEvents
-import kotlinx.datetime.LocalDateTime
-import kotlin.jvm.Throws
 
 /*
 DeclareLiveBuilderScreen :
@@ -123,23 +122,17 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
 
             Column(modifier.padding(paddingVal)) {
                 MainObjectHeaderItem(
-                    objectName = declareBuilderStatesAndEvents.uiState.currentSum.typeName,
                     isBuilder = true,
                     navToPlatformBuilder = {
                         if (navigator != null) {
                             navigator.push(PlatformBuilderScreenClass())
                         }
                     },
-                    pickedPlatform = declareBuilderStatesAndEvents.uiState.liveBuilderState.workingPlatform,
                     onPlatformPick = {declareBuilderStatesAndEvents.onPlatformPick(it)},
                     navigator = navigator,
-                    mainBarValue = declareBuilderStatesAndEvents.uiState.currentSum.totalIncome,
-                    mainBarComparable = declareBuilderStatesAndEvents.uiState.comparableObj.totalIncome,
-                    subValue = declareBuilderStatesAndEvents.uiState.liveBuilderState.totalTime,
-                    subComparable = declareBuilderStatesAndEvents.uiState.comparableObj.totalTime,
-                    perDeliveryValue = declareBuilderStatesAndEvents.uiState.currentSum.averageIncomePerDelivery, perDeliveryComparable = declareBuilderStatesAndEvents.uiState.comparableObj.averageIncomePerDelivery,
-                    perHourComparable = declareBuilderStatesAndEvents.uiState.comparableObj.averageIncomePerHour, perHourValue = declareBuilderStatesAndEvents.uiState.currentSum.averageIncomePerHour,
-                    perSessionValue = declareBuilderStatesAndEvents.uiState.currentSum.totalIncome, perSessionComparable =declareBuilderStatesAndEvents.uiState.comparableObj.totalIncome,
+                   mainObjectHeaderItemData = sumObjectToMainObjectHeaderItemData(value = declareBuilderStatesAndEvents.uiState.currentSum,
+                       comparable = declareBuilderStatesAndEvents.uiState.comparableObj),
+                    onMainObjectClick = {},
                     modifier = modifier)
 
                 ExtrasTextField(commonExras = listOf("1", "5", "10", "15", "20"), onSend = declareBuilderStatesAndEvents.onAddDeliveryItem)

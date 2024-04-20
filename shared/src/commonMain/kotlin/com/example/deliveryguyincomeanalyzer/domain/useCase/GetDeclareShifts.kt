@@ -1,6 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.domain.useCase
 
-import com.example.deliveryguyincomeanalyzer.domain.model.ShiftFrame
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.ShiftFrame
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.DataPerHourDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
@@ -92,8 +92,8 @@ class GetDeclareShifts {
                 ShiftDomain(
                     workingPlatform = liveBuilderState.workingPlatform,
                     shiftType = shiftFrame.name,
-                    startTime = theStart.time,
-                    endTime = theEnd.time,
+                    startTime = theStart,
+                    endTime = theEnd,
                     time = timeSum,
                     extraIncome = extras,
                     baseIncome = liveBuilderState.baseWage*timeSum,
@@ -158,9 +158,11 @@ class GetDeclareShifts {
                     LiveDeliveryItem(LocalDateTime(date = LocalDate(2024,Month.APRIL,6),time = LocalTime(2,40)), extra = 50f),
                     LiveDeliveryItem(LocalDateTime(date = LocalDate(2024,Month.APRIL,6),time = LocalTime(4,40)), extra = 150f),
                 )),
-            shiftsFrames = listOf(ShiftFrame("morrning", startTime = LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,9,30), LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,15,0)),
+            shiftsFrames = listOf(
+                ShiftFrame("morrning", startTime = LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,9,30), LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,15,0)),
                 ShiftFrame("Noon", startTime = LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,16,0), LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,22,0)),
-                        ShiftFrame("Night", startTime = LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,22,0), LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,4,0)))
+                        ShiftFrame("Night", startTime = LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 4,22,0), LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,4,0))
+            )
         )
     }
 

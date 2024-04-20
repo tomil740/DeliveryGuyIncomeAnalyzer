@@ -1,6 +1,7 @@
 package com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels
 
-import com.example.deliveryguyincomeanalyzer.domain.model.WorkSessionSum
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getTimeDifferent
 import kotlinx.datetime.LocalDateTime
 
@@ -15,14 +16,15 @@ data class LiveBuilderState(
     val delivers : Int,
     val deliversItem: List<LiveDeliveryItem>
 ){
-    fun toWorkSessionSum():WorkSessionSum{
+    fun toWorkSessionSum(): SumObj {
         val theTime = getTimeDifferent(startTime =  startTime.time, endTime =  endTime.time)
         val baseIncome = baseWage*theTime
 
-        return WorkSessionSum(startTime =  startTime, endTime = endTime, typeName = "Builder Data",
+        return SumObj(startTime =  startTime, endTime = endTime, objectName = "Builder Data",
             totalTime = theTime, platform = workingPlatform, baseIncome = baseIncome
             , extraIncome = extras, totalIncome = baseIncome+extras
             , delivers = delivers, averageIncomePerDelivery = (baseIncome+extras)/delivers,
-            averageIncomePerHour = (baseIncome+extras)/theTime)
+            averageIncomePerHour = (baseIncome+extras)/theTime, objectType = SumObjectsType.WorkSession, shiftType = null,
+            averageIncomeSubObj = 1f, subObjName = "Sum", averageTimeSubObj = 1f)
     }
 }

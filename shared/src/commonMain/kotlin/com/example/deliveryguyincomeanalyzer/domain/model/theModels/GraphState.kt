@@ -1,12 +1,12 @@
-package com.example.deliveryguyincomeanalyzer.domain.model
+package com.example.deliveryguyincomeanalyzer.domain.model.theModels
 
 data class GraphState(
-    val ogLst:List<Float> ,
+    val ogLst:List<Float>,
     val dataLst:List<Float> = ogLst,
     val listStartTime:Int=0,
-    val listEndTime:Int=dataLst.size,
+    var listEndTime:Int=dataLst.size,
     val startTime: Int = listStartTime,
-    val endTime:Int=listEndTime
+    var endTime:Int=listEndTime
 ){
 
     fun getColumnSize():Float {
@@ -18,7 +18,7 @@ data class GraphState(
         return columns
     }
     //return an update cope of the object
-    fun UpdateGraphData(startTime1: Int= startTime,endTime1: Int=endTime):GraphState{
+    fun UpdateGraphData(startTime1: Int= startTime,endTime1: Int=endTime): GraphState {
         val result:MutableList<Float> = mutableListOf()
         var counter = listStartTime
         for (i in ogLst) {
@@ -34,20 +34,32 @@ data class GraphState(
         return this.copy(dataLst=result,startTime=startTime1, endTime = endTime1)
 
     }
-
     fun getStartOptionsLst():List<Int>{
         var optionLst:MutableList<Int> = mutableListOf()
-        for (i in 0..25){
-            if(i>=listStartTime && i<=endTime&&i<endTime)
-                optionLst.add(i)
+        if(listEndTime < listStartTime) {
+            listEndTime += 24
+            endTime=listEndTime
+        }
+
+        for (i in 0..50){
+            println("the end Time $endTime")
+            if(i>=listStartTime && i<=endTime&&i<endTime) {
+                optionLst.add(
+                    i
+                )
+            }
         }
         return optionLst
     }
     fun getEndOptionsLst():List<Int>{
         var optionLst:MutableList<Int> = mutableListOf()
-        for (i in 0..25){
+        if(listEndTime < listStartTime)
+            listEndTime+=24
+        for (i in 0..50){
             if(i>=startTime && i<=listEndTime&&i>startTime)
-                optionLst.add(i)
+                optionLst.add(
+                    i
+                )
         }
         return optionLst
 

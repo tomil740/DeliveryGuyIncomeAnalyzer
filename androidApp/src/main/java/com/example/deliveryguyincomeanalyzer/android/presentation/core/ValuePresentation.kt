@@ -7,7 +7,11 @@ fun valuePresentation(theVal:Float):String{
         val a = workingValue/1000
         val b = ((workingValue-(a*1000))/10)
 
-        result = "${(a)}.${b}"
+        if(b < 10)
+            result="${(a)}.0${b}"
+        if(b >= 10){
+            result = "${(a)}.${b}"
+        }
         if (result.last() == '0')
            result = result.subSequence(0,result.length-1).toString()
 

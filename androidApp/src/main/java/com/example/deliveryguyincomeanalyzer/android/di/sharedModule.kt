@@ -10,13 +10,19 @@ import com.example.deliveryguyincomeanalyzer.domain.useCase.GetDeclareDataPerHou
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetDeclareShifts
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetLastWorkSessionSum
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetLiveBuilderState
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetAllTimeMonthData
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetMonthSum
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetShiftTypeStatisticsData
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetWorkSessionStatisticsData
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertDataPerHour
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertLiveDeliveryState
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertShiftObj
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertWorkDeclare
+import com.example.deliveryguyincomeanalyzer.domain.useCase.ObjectItemUseCases
+import com.example.deliveryguyincomeanalyzer.domain.useCase.SumDomainData
 import com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen.DeclareBuilderViewmodel
+import com.example.deliveryguyincomeanalyzer.presentation.objectItemScreen.ObjectItemViewmodel
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.compose.get
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -40,6 +46,23 @@ val sharedModule = module {
             getLastWorkSessionSum = GetLastWorkSessionSum(get())
         )
     }
+
+    single<ObjectItemUseCases> {
+        ObjectItemUseCases(
+            getLastWorkSessionSum = GetLastWorkSessionSum(get()),
+            getMonthSum = GetMonthSum(get()),
+            getAllTimeMonthData = GetAllTimeMonthData(get()),
+            sumDomainData = SumDomainData(),
+            getWorkSessionStatisticsData = GetWorkSessionStatisticsData(get()),
+            getShiftTypeStatisticsData = GetShiftTypeStatisticsData(get())
+        )
+    }
+
+
+    viewModel{
+        ObjectItemViewmodel(get())
+    }
+    
 
     viewModel {
         DeclareBuilderViewmodel(get())

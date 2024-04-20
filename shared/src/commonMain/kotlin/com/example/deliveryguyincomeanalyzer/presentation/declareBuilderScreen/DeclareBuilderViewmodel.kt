@@ -1,10 +1,11 @@
 package com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen
 
-import com.example.deliveryguyincomeanalyzer.domain.model.ShiftFrame
-import com.example.deliveryguyincomeanalyzer.domain.model.SumObject
-import com.example.deliveryguyincomeanalyzer.domain.model.WorkSessionSum
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.ShiftFrame
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveDeliveryItem
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getTimeDifferent
 import com.example.deliveryguyincomeanalyzer.domain.useCase.DeclareBuilderUseCases
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getDeliversData
@@ -25,19 +26,22 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
 
 class DeclareBuilderViewmodel(val declareBuilderUseCases: DeclareBuilderUseCases): ViewModel() {
     /*
     comparedObj :
     an component of the uiState object , will be an workSession sum (at this screen) , we will get the average of them from our db archive ...
      */
-    private val comparedObj: SumObject = WorkSessionSum(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30), endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30),
+    private val comparedObj: SumObjectInterface = SumObj(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30), endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30),
         totalTime = getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time),
         platform = "Wolt", baseIncome = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f)
         , extraIncome = 300f, totalIncome = getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f
         , delivers = 35, averageIncomePerDelivery = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f)/35f,
         averageIncomePerHour = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f)/
                 getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time),
+        objectType = SumObjectsType.WorkSession, shiftType = null, averageIncomeSubObj = 5f, objectName = "w", subObjName = "", averageTimeSubObj = 5f
     )
 
     /*
@@ -70,8 +74,8 @@ class DeclareBuilderViewmodel(val declareBuilderUseCases: DeclareBuilderUseCases
         onDeclareBuilderEvent(DeclareBuilderEvents.getLiveBuilderState)
             CoroutineScope(Dispatchers.IO).launch {
 
-                val a = declareBuilderUseCases.getLastWorkSessionSum.invoke().toWorkSessionSum()
-                _uiState.update { it.copy(currentSum = a) }
+                //val a = declareBuilderUseCases.getLastWorkSessionSum.invoke().toWorkSessionSum()
+               // _uiState.update { it.copy(currentSum = a) }
 
                 while (true) {
                     liveBuilderState.update {
@@ -137,30 +141,29 @@ class DeclareBuilderViewmodel(val declareBuilderUseCases: DeclareBuilderUseCases
 
 
             DeclareBuilderEvents.onSubmitDeclare ->{
+                val a = LocalDate(2024,Month.FEBRUARY,19)
                 val fakeLiveBuilderState = LiveBuilderState(
-                    startTime = LocalDateTime(2024,Month.APRIL,11,8,30), endTime = LocalDateTime(2024,Month.APRIL,12,2,30), totalTime = getTimeDifferent(startTime = LocalDateTime(2024,Month.APRIL,11,8,30).time, endTime = LocalDateTime(2024,Month.APRIL,12,1,30).time),
+                    startTime = LocalDateTime(date = a, time = LocalTime(8,30)), endTime = LocalDateTime(a,LocalTime(22,30)), totalTime = getTimeDifferent(startTime = LocalDateTime(date = a, time = LocalTime(8,30)).time, endTime = LocalDateTime(a,LocalTime(22,30)).time),
                     workingPlatform = "Wolt",
                     baseWage = 45f,
-                    extras = 250.5f, delivers = 18,
-                    deliversItem = listOf(LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,8,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,9,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,10,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,11,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,12,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,13,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,14,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,15,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,16,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,17,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,18,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,19,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,20,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,21,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,22,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,11,23,45), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,12,0,45), extra = 4f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,12,1,12), extra = 2f),
-                        LiveDeliveryItem(time = LocalDateTime(2024,Month.APRIL,12,1,23), extra = 2f)
+                    extras = 250.5f, delivers = 22,
+                    deliversItem = listOf(LiveDeliveryItem(time = LocalDateTime(date = a,time=LocalTime(8,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(9,45)), extra = 49f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(10,45)), extra = 92f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(10,45)), extra = 92f),
+                        LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(11,25)), extra = 84f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(11,45)), extra = 23f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(12,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(12,55)), extra = 4f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(13,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(14,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(14,55)), extra = 4f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(15,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(16,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(16,55)), extra = 4f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(17,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(18,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(18,55)), extra = 4f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(18,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(19,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(19,55)), extra = 4f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(20,45)), extra = 2f),
+                        LiveDeliveryItem(time = LocalDateTime(a,LocalTime(21,45)), extra = 2f),LiveDeliveryItem(time = LocalDateTime(date = a,time= LocalTime(21,56)), extra = 4f),
                     )
                 )
                 viewModelScope.launch {

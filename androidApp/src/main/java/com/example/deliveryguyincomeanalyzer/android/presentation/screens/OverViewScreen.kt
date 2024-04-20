@@ -39,6 +39,7 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.Sm
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.DeclareBuilderScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.ObjectItemScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
+import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObjectHeaderItemData
 
 @Composable
 fun OverViewScreen(modifier:Modifier=Modifier) {
@@ -66,8 +67,9 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 item {
-                    MainObjectHeaderItem(onMainObjectClick = { navigator.push(ObjectItemScreenClass("March")) },
-                        navigator = navigator, navToPlatformBuilder = {})
+                    MainObjectHeaderItem(onMainObjectClick = { navigator.push(ObjectItemScreenClass()) },
+                        navigator = navigator, navToPlatformBuilder = {}, onPlatformPick = {}, mainObjectHeaderItemData = MainObjectHeaderItemData()
+                    )
 
                     Text(
                         text = "Recent work :",
@@ -89,7 +91,7 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
                                     hoursComparable = 8f,
                                     hoursValue = 7f,
                                     income = 750f,
-                                    navToObject = {navigator.push(ObjectItemScreenClass(it))}
+                                    navToObject = {navigator.push(ObjectItemScreenClass())}
                                 )
                             }
                         }
