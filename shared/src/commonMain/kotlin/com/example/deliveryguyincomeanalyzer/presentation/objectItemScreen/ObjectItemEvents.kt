@@ -9,9 +9,11 @@ sealed class ObjectItemEvents {
     data class InitializeAnObject(val theSum:SumObjectInterface):ObjectItemEvents()
     data class GetValueAllArchive(val workingPlatform: String):ObjectItemEvents()
     data class GetComparableMenuAllArchive(val workingPlatform: String):ObjectItemEvents()
-    data object OnCloseMenu:ObjectItemEvents()
-    data object OnOpenMenu:ObjectItemEvents()
-    data class OnMenuPick(val obj:SumObjectInterface):ObjectItemEvents()
-
-
+    data object OnCloseComparableMenu:ObjectItemEvents()
+    data object OnOpenComparableMenu:ObjectItemEvents()
+    data class OnArchiveComparableMenuPick(val obj:SumObjectInterface?):ObjectItemEvents()
+    data class OnValueWorkingPlatformPick(val workingPlatformId:String):ObjectItemEvents()
+    data class  SendUiMessage(val mess:String):ObjectItemEvents()
+    //data object OnMyStatWorkingPlatformMenu : ObjectItemEvents()
+    //data object OnGeneralStatWorkingPlatformMenu : ObjectItemEvents()
 }

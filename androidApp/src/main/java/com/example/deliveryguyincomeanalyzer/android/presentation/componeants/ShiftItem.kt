@@ -177,8 +177,8 @@ fun ShiftItem(shiftSum: SumObjectInterface = ShiftDomain("Morrning", startTime =
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TwoValuesProgressBar(barVal = (shiftSum!!.baseIncome+ shiftSum.extraIncome),
-            comparableVal = (shiftSum!!.baseIncome+ shiftSum.extraIncome)*1.3f, subBarVal = shiftSum!!.totalTime,
+        TwoValuesProgressBar(barVal = (shiftSum.baseIncome+ shiftSum.extraIncome),
+            comparableVal = (shiftSum.baseIncome+ shiftSum.extraIncome)*1.3f, subBarVal = shiftSum.totalTime,
             subComparableVal = shiftSum.totalTime*1.3f, isFullBar = true, perDeliveryValue = shiftSum.averageIncomePerDelivery, perDeliveryComparable = shiftSum.averageIncomePerDelivery*1.3f,
             perHourComparable = shiftSum.averageIncomePerHour*1.3f, perHourValue = shiftSum.averageIncomePerHour
             )

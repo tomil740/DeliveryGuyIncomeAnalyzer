@@ -1,7 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.presentation.objectItemScreen
 
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
-import com.example.deliveryguyincomeanalyzer.domain.model.theModels.WorkingPlatform
 
 data class ObjectItemStatesAndEvents(
     val uiState: ObjectItemUiState,
@@ -11,8 +10,8 @@ data class ObjectItemStatesAndEvents(
     val onCloseMenu:()->Unit,
 
 
-    val onMenuPick:(SumObjectInterface)->Unit,
-
+    val onArchiveComparableMenuPick:(SumObjectInterface?)->Unit,
+    val onMyStatPick:(String)->Unit,
     val onComparablePlatform:(String)->Unit,
-    val onValueWorkingPlatform: (String)->Unit
+    val onValueWorkingPlatform: (String)->Unit,
 )

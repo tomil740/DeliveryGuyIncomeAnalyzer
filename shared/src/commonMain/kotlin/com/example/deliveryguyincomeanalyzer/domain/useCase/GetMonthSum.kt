@@ -5,6 +5,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.Dat
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.WorkSumDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.WorkingPlatform
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getDataPerHourSum
 import kotlinx.datetime.LocalDate
@@ -13,8 +14,8 @@ import kotlinx.datetime.LocalTime
 
 class GetMonthSum(val repository: Repository) {
 
-    operator fun invoke(yearAndMonth:String): SumObj {
-        val a = repository.getMonthSum(yearAndMonth)
+    operator fun invoke(yearAndMonth:String,workingPlatform: String): SumObj {
+        val a = repository.getMonthSum(yearAndMonth,workingPlatform)
 
         var time : Float=0f
         var deliveries : Int=0
@@ -37,7 +38,7 @@ class GetMonthSum(val repository: Repository) {
                 shifts.add(k)
         }
 
-        val currentTime = a.get(0).startTime
+        val currentTime = a[0].startTime
        val ab = WorkSumDomain(
             startTime = LocalDateTime(LocalDate(year = currentTime.year, month = currentTime.month, dayOfMonth = 1), time= LocalTime(0,0)),
             endTime = LocalDateTime(LocalDate(year = currentTime.year, month = currentTime.month, dayOfMonth = 28), time= LocalTime(23,0)),

@@ -32,6 +32,8 @@ fun MainObjectHeaderItem(
     mainObjectHeaderItemData: MainObjectHeaderItemData,
     onPlatformPick:(String)->Unit,
     onMainObjectClick:(String)->Unit,
+    onComparablePick:(String)->Unit={},
+    onMyStatPick:(String)->Unit={},
     isBuilder:Boolean = false,
     isPlatform:Boolean=false,
     value1Color : Color = Color.Blue,
@@ -78,7 +80,8 @@ fun MainObjectHeaderItem(
                     navToBuild = navToPlatformBuilder,
                     context = navToPlatformContext,
                     pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
-                    onPlatformPick = { onPlatformPick(it) }
+                    onPlatformPick = { onPlatformPick(it) },
+                    theLst = mainObjectHeaderItemData.platformsMenu1.plus(mainObjectHeaderItemData.platformsMenu2)
                 )
             }
 
@@ -95,10 +98,13 @@ fun MainObjectHeaderItem(
                         navToBuild = navToPlatformBuilder,
                         context = navToPlatformContext,
                         pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
-                        onPlatformPick = {onPlatformPick(it)}
+                        onPlatformPick = {onPlatformPick(it)},
+                        theLst = mainObjectHeaderItemData.platformsMenu1.plus(mainObjectHeaderItemData.platformsMenu2)
                     )
                 else {
-                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()}, onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()}, comparableName =mainObjectHeaderItemData.archiveComparableName )
+                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()}, onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()},
+                        pickedPlatformComparable =mainObjectHeaderItemData.pickedPlatformComparable,platformsMenu1=mainObjectHeaderItemData.platformsMenu1 ,
+                        platformsMenu2=mainObjectHeaderItemData.platformsMenu2, onItemPick = {onMyStatPick(it)})
                 }
             }
             if (isPlatform) {
@@ -114,6 +120,8 @@ fun MainObjectHeaderItem(
                 )
                 Spacer(modifier = Modifier.height(32.dp))
             } else {
+                if(mainObjectHeaderItemData.subValue.isNaN())
+                    println("the objects ${mainObjectHeaderItemData}")
                 TwoValuesProgressBar(
                     barVal = mainObjectHeaderItemData.mainBarValue,
                     comparableVal = mainObjectHeaderItemData.mainBarComparable,
@@ -125,7 +133,7 @@ fun MainObjectHeaderItem(
                     perHourValue = mainObjectHeaderItemData.perHourValue,
                     //should be optional according to the object type , in order to implemnt the matched data type
                     perSessionValue =mainObjectHeaderItemData.subSumAverageIncome,
-                    perSessionComparable =10005f ,
+                    perSessionComparable = mainObjectHeaderItemData.subSumComparableAverageIncome,
                     )
 
             }

@@ -20,10 +20,11 @@ class ObjectItemScreenClass(private val initializeObj: SumObjectInterface? = nul
         val state by a.uiState.collectAsState()
         val b = ObjectItemStatesAndEvents(uiState = state, getMonthSum = {},
             initializeAnObject = { a.onEvent(ObjectItemEvents.InitializeAnObject(it)) },
-            onCloseMenu = {a.onEvent(ObjectItemEvents.OnCloseMenu)}, onOpenMenu = {a.onEvent(ObjectItemEvents.OnOpenMenu)},
-            onMenuPick = {a.onEvent(ObjectItemEvents.OnMenuPick(it))},
+            onCloseMenu = {a.onEvent(ObjectItemEvents.OnCloseComparableMenu)}, onOpenMenu = {a.onEvent(ObjectItemEvents.OnOpenComparableMenu)},
+            onArchiveComparableMenuPick = {a.onEvent(ObjectItemEvents.OnArchiveComparableMenuPick(it))},
             onValueWorkingPlatform = {a.onEvent(ObjectItemEvents.GetValueAllArchive(it))},
             onComparablePlatform = {a.onEvent(ObjectItemEvents.GetComparableMenuAllArchive(it))},
+            onMyStatPick = {a.onEvent(ObjectItemEvents.GetComparableStatistics(it))}
         )
         ObjectItemScreen(initializeObj = initializeObj,b,modifier = Modifier)
     }

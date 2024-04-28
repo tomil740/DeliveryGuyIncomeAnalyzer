@@ -57,6 +57,8 @@ the result will be a little bit wired UI object that works in practice but will 
 @Composable
 fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAndEvents: DeclareBuilderStatesAndEvents) {
 
+   // declareBuilderStatesAndEvents.onPickWorkingPlatform("Domin")
+
     val navigator = LocalNavigator.current
 
     var showActionOptions by remember { mutableStateOf(false) }
@@ -128,10 +130,13 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
                             navigator.push(PlatformBuilderScreenClass())
                         }
                     },
-                    onPlatformPick = {declareBuilderStatesAndEvents.onPlatformPick(it)},
+                    onPlatformPick = {declareBuilderStatesAndEvents.onPickWorkingPlatform(it)},
                     navigator = navigator,
                    mainObjectHeaderItemData = sumObjectToMainObjectHeaderItemData(value = declareBuilderStatesAndEvents.uiState.currentSum,
-                       comparable = declareBuilderStatesAndEvents.uiState.comparableObj),
+                       comparable = declareBuilderStatesAndEvents.uiState.comparableObj,
+                       platformOptionMenu1 = declareBuilderStatesAndEvents.uiState.workingPlatformRemoteMenu,
+                       platformOptionMenu2 = declareBuilderStatesAndEvents.uiState.workingPlatformCustomMenu
+                   ),
                     onMainObjectClick = {},
                     modifier = modifier)
 

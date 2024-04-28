@@ -6,10 +6,12 @@ import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.Shi
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveDeliveryItem
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getTimeDifferent
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
+import kotlinx.datetime.plus
 
 /*
 GetDeclareShifts description : V
@@ -20,18 +22,209 @@ dataPerHour list of all the regular hour that dose not belong to any shift frame
  */
 
 class GetDeclareShifts {
-
     operator fun invoke(
         dataPerHourDomain: List<DataPerHourDomain>,
         liveBuilderState: LiveBuilderState,
         shiftsFrames: List<ShiftFrame>
     ): ResultObj{
 
+        //new try :
+        val theStartDate = shiftsFrames[0].startTime.date
+        var morningS = shiftsFrames[0].startTime.hour+(shiftsFrames[0].startTime.minute/60f)
+        var morningE=shiftsFrames[0].endTime.hour+(shiftsFrames[0].endTime.minute/60f)
+        var noonS=shiftsFrames[1].startTime.hour+(shiftsFrames[1].startTime.minute/60f)
+        var noonE=shiftsFrames[1].endTime.hour+(shiftsFrames[1].endTime.minute/60f)
+        var nightS=shiftsFrames[2].startTime.hour+(shiftsFrames[2].startTime.minute/60f)
+        var nightE=shiftsFrames[2].endTime.hour+(shiftsFrames[2].endTime.minute/60f)
+        var counter = 0
+        for (i in shiftsFrames) {
+            var theVal = 0
+            if (theStartDate < i.startTime.date){
+                theVal+=24
+            }
+            when(counter){
+                0->{morningS+=theVal}
+                1->{noonS+=theVal}
+                2->{nightS+=theVal}
+            }
+            theVal = 0
+            if (theStartDate < i.endTime.date){
+                theVal+=24
+            }
+            when(counter){
+                0->{morningE+=theVal}
+                1->{noonE+=theVal}
+                2->{nightE+=theVal}
+            }
+            counter+=1
+        }
+        /*
+        At this phase each variable havs an intger value of his type between 0-48
+         */
+
+
+        /*
+        need to define which shifts should be define
+         */
+        var dataStart = liveBuilderState.startTime.date
+        val dataSTime=liveBuilderState.startTime.time.hour+(liveBuilderState.startTime.time.minute/60f)
+        var dataETime=liveBuilderState.endTime.time.hour+(liveBuilderState.endTime.time.minute/60f)
+        if(dataStart < liveBuilderState.endTime.date){
+            dataETime+=24
+        }
+        var dataMorningS = if(dataSTime >=morningS){dataSTime}else{morningS}
+        val dataMorningE =if (dataETime >= morningE){morningE}else{dataETime}
+        var dataNoonS = if(dataSTime >=noonS){dataSTime}else{noonS}
+        val dataNoonE =if (dataETime >= noonE){noonE}else{dataETime}
+        var dataNightS = if(dataSTime >=nightS){dataSTime}else{nightS}
+        val dataNightE =if (dataETime >= nightE){nightE}else{dataETime}
+
+
+
+        /*
+        now to each value data object we will check the same , if it is at different date
+        */
+        var deliveries = 0
+        var extras = 0f
+        var deliveries1 = 0
+        var extras1 = 0f
+        var deliveries2 = 0
+        var extras2 = 0f
+        for (i in liveBuilderState.deliversItem){
+            var theTime=i.time.hour+(i.time.minute/60f)
+            if(dataStart < i.time.date){
+                theTime+=24
+            }
+            if(theTime in dataMorningS..<dataMorningE){
+                deliveries+=1
+                extras+=i.extra
+            }
+            else if(theTime in dataNoonS..<dataNoonE){
+                deliveries1+=1
+                extras1+=i.extra
+            }
+            else if(theTime in dataNightS..<dataNightE){
+                deliveries2+=1
+                extras2+=i.extra
+            }
+        }
+        val theDataSum = mutableListOf<ShiftDomain>()
+        /*
+        now we need to connect the data per hour matched objects
+         */
+        val a = getShiftDomain(shiftYpe="Morning",sumE = dataMorningE, sumS = dataMorningS, liveBuilderState = liveBuilderState,
+            deliveries = deliveries, extras = extras, dataPerHourDomain = dataPerHourDomain)
+        if(a!=null) {
+            theDataSum.add(a!!)
+        }
+        val b = getShiftDomain(shiftYpe="Noon",sumE = dataNoonE, sumS = dataNoonS, liveBuilderState = liveBuilderState,
+            deliveries = deliveries1, extras = extras1, dataPerHourDomain = dataPerHourDomain)
+        if(b!=null) {
+            theDataSum.add(b!!)
+        }
+        val c = getShiftDomain(shiftYpe="Night",sumE = dataNightE, sumS = dataNightS, liveBuilderState = liveBuilderState,
+            deliveries = deliveries2, extras = extras2, dataPerHourDomain = dataPerHourDomain)
+        if(c!=null) {
+            theDataSum.add(c!!)
+        }
+
+
+        var totalShiftTimeS =theDataSum.first().dataPerHour.first().hour
+
+
+        var totalShiftTimeE = theDataSum.last().dataPerHour.last().hour
+
+        if(totalShiftTimeE<totalShiftTimeS)
+            totalShiftTimeE+=24
+
+
+        val unUsedDataPerHour= mutableListOf<DataPerHourDomain>()
+
+        var aftermid = false
+        for (i in dataPerHourDomain) {
+            var theHour = i.hour
+            if (i.hour == 0)
+                aftermid = true
+            if(aftermid)
+                theHour+=24
+
+            if (theHour > totalShiftTimeE || theHour< totalShiftTimeS)
+                unUsedDataPerHour.add(i)
+        }
+
+        return ResultObj(
+            theShifts = theDataSum,
+            unUsedData = unUsedDataPerHour)
+
+
+    }
+    fun getShiftDomain(shiftYpe : String,sumS:Float,sumE:Float,liveBuilderState:LiveBuilderState,deliveries:Int,extras:Float,
+                       dataPerHourDomain: List<DataPerHourDomain>):ShiftDomain?{
+        if(sumE - sumS >= 4) {
+            val theShiftDataPerHourDomain = mutableListOf<DataPerHourDomain>()
+            for (i in dataPerHourDomain) {
+                if(i.hour.toFloat() in sumS..<sumE){
+                    theShiftDataPerHourDomain.add(i)
+                }
+            }
+            return ShiftDomain(
+                workingPlatform = liveBuilderState.workingPlatform,
+                shiftType = shiftYpe,
+                startTime = fromSumIntToLocal(sumS,liveBuilderState.startTime.date),
+                endTime = fromSumIntToLocal(sumE,liveBuilderState.startTime.date),
+                time = sumE - sumS,
+                extraIncome = extras,
+                baseIncome = liveBuilderState.baseWage * (sumE - sumS),
+                delivers = deliveries,
+                dataPerHour = theShiftDataPerHourDomain,
+            )
+
+        }
+        return null
+    }
+    fun fromSumIntToLocal(theVal:Float,theDate:LocalDate):LocalDateTime{
+        var theVal1 = theVal
+        var theDate1 = theDate
+        var hour = theVal.toInt()
+        if(hour>=24){
+            theVal1-=24
+            hour-=24
+            theDate1 = theDate.plus(DatePeriod(days = 1))
+        }
+        val minute = ((theVal1-hour)*60).toInt()
+        return LocalDateTime(date = theDate1, time = LocalTime(hour,minute))
+    }
+
+
+/*
+
+
+
+        //need to sync the dates togther between the shifts frame form the abstract obj to the spesfic builder data ...
+        var startDate:LocalDateTime = shiftsFrames[0].startTime
+        val newFrame = mutableListOf<ShiftFrame>()
+        for (i in shiftsFrames){
+            if(startDate < i.startTime){
+                newFrame.add(i.copy(startTime = LocalDateTime(date = liveBuilderState.startTime.date.plus(DatePeriod(days = 1)),
+                    time = i.startTime.time)))
+            }else{
+                newFrame.add(i.copy(startTime = LocalDateTime(date = liveBuilderState.startTime.date,
+                    time = i.startTime.time)))
+            }
+            if(startDate < i.endTime){
+                newFrame.add(i.copy(endTime =LocalDateTime(date = liveBuilderState.startTime.date.plus(DatePeriod(days = 1)),
+                    time = i.endTime.time)))
+            }else{
+                newFrame.add(i.copy(endTime = LocalDateTime(date = liveBuilderState.startTime.date,
+                    time = i.endTime.time)))
+            }
+        }
+
         val dataSum = mutableListOf<ShiftDomain>()
         var unUseDataPerHourDomain = mutableListOf<DataPerHourDomain>()
 
 
-        for (shiftFrame in shiftsFrames) {
+        for (shiftFrame in newFrame) {
             var theStart = shiftFrame.startTime
             var theEnd = shiftFrame.endTime
 
@@ -129,6 +322,8 @@ class GetDeclareShifts {
             unUsedData = theUnusedDataPerHourDomain
         )
     }
+
+ */
 
     fun getDeclareShiftsTest() : ResultObj {
 

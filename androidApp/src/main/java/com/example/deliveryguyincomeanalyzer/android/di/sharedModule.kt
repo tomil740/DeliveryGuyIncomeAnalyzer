@@ -14,6 +14,8 @@ import com.example.deliveryguyincomeanalyzer.domain.useCase.GetAllTimeMonthData
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetMonthSum
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetShiftTypeStatisticsData
 import com.example.deliveryguyincomeanalyzer.domain.useCase.GetWorkSessionStatisticsData
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetWorkingPlatformById
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetWorkingPlatformMenu
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertDataPerHour
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertLiveDeliveryState
 import com.example.deliveryguyincomeanalyzer.domain.useCase.InsertShiftObj
@@ -43,7 +45,10 @@ val sharedModule = module {
             insertDataPerHour = InsertDataPerHour(get()),
             insertShiftObj = InsertShiftObj(get()),
             insertWorkDeclare = InsertWorkDeclare(get()),
-            getLastWorkSessionSum = GetLastWorkSessionSum(get())
+            getLastWorkSessionSum = GetLastWorkSessionSum(get()),
+            getWorkingPlatformById = GetWorkingPlatformById(get()),
+            getWorkingPlatformMenu = GetWorkingPlatformMenu(get())
+
         )
     }
 
@@ -54,7 +59,8 @@ val sharedModule = module {
             getAllTimeMonthData = GetAllTimeMonthData(get()),
             sumDomainData = SumDomainData(),
             getWorkSessionStatisticsData = GetWorkSessionStatisticsData(get()),
-            getShiftTypeStatisticsData = GetShiftTypeStatisticsData(get())
+            getShiftTypeStatisticsData = GetShiftTypeStatisticsData(get()),
+            getWorkingPlatformMenu = GetWorkingPlatformMenu(get()),
         )
     }
 

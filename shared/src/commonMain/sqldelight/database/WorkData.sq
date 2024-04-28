@@ -1,16 +1,8 @@
-CREATE TABLE LiveBuilderyState(
-    id INTEGER NOT NULL DEFAULT 0 PRIMARY KEY,
-    startTime TEXT NOT NULL,
-    endTime  TEXT NOT NULL,
-    totalTime REAL NOT NULL,
-    workingPlatform TEXT NOT NULL,
-    baseWage REAL NOT NULL,
-    extras REAL  NOT NULL,
-    delivers INTEGER NOT NULL
-);
 CREATE TABLE WokingPlatform(
-     workingPlatform TEXT NOT NULL  PRIMARY KEY,
-     workingZone TEXT NOT NULL,
+     workingPlatformId TEXT NOT NULL PRIMARY KEY ,
+     workingZone TEXT ,
+     platformName TEXT,
+     isCustom INTEGER ,
      morningShifts TEXT NOT NULL ,
      morningShiftE TEXT NOT NULL,
      noonShiftS TEXT NOT NULL,
@@ -18,6 +10,16 @@ CREATE TABLE WokingPlatform(
      eveningShiftS TEXT NOT NULL,
      eveningShiftE TEXT NOT NULL,
      baseSalary  REAL  NOT NULL
+);
+CREATE TABLE LiveBuilderyState(
+    id INTEGER NOT NULL DEFAULT 0 PRIMARY KEY,
+    startTime TEXT NOT NULL,
+    endTime  TEXT NOT NULL,
+    totalTime REAL NOT NULL,
+    workingPlatformId TEXT NOT NULL,
+    baseWage REAL NOT NULL,
+    extras REAL  NOT NULL,
+    delivers INTEGER NOT NULL
 );
 CREATE TABLE WorkDeclare(
      workDeclareId TEXT NOT NULL DEFAULT '0' PRIMARY KEY,
@@ -27,8 +29,8 @@ CREATE TABLE WorkDeclare(
      baseIncome REAL NOT NULL ,
      deliveries INTEGER NOT NULL,
      month TEXT NOT NULL,
-     workingPlatform TEXT NOT NULL,
-     FOREIGN KEY (workingPlatform) REFERENCES WokingPlatform(workingPlatform)
+     workingPlatformId TEXT NOT NULL,
+     FOREIGN KEY (workingPlatformId) REFERENCES WokingPlatform(workingPlatformId)
 );
 CREATE TABLE DataPerHour(
      id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
@@ -59,6 +61,53 @@ CREATE TABLE  LiveDeliveryItem(
      extra REAL NOT NULL,
      liveDeliveryState INTEGER NOT NULL
 );
+CREATE TABLE RemoteWorkingPlatform(
+    workingPlatformId TEXT NOT NULL PRIMARY KEY ,
+    workingZone TEXT ,
+    platformName TEXT
+);
+
+insertRemoteWorkingPlatform:
+    INSERT OR REPLACE
+    INTO RemoteWorkingPlatform(
+        workingPlatformId,
+        workingZone,
+        platformName
+    )VALUES(?,?,?);
+
+insertWorkingPlatform:
+    INSERT OR REPLACE
+    INTO WokingPlatform(
+         workingPlatformId ,
+         workingZone,
+         platformName,
+         isCustom ,
+         morningShifts,
+         morningShiftE,
+         noonShiftS,
+         noonShiftE,
+         eveningShiftS,
+         eveningShiftE,
+         baseSalary
+    )VALUES(?,?,?,?,?,?,?,?,?,?,?);
+
+getRemoteWorkingPlatformOptions1:
+    SELECT * FROM RemoteWorkingPlatform  WHERE workingZone = "X" ORDER BY platformName DESC;
+
+getRemoteWorkingPlatformOptions2:
+    SELECT * FROM RemoteWorkingPlatform WHERE platformName = ? ORDER BY platformName DESC;
+
+getLocalWorkingPlatformOptions1:
+    SELECT * FROM WokingPlatform  WHERE(workingZone = "X" AND isCustom = 1) ORDER BY platformName DESC;
+
+getLocalWorkingPlatformOptions2:
+    SELECT * FROM WokingPlatform WHERE platformName = ? ORDER BY platformName DESC;
+
+getWorkingPlatformById:
+    SELECT * FROM WokingPlatform WHERE workingPlatformId = ?;
+
+getRemoteWorkingPlatformById:
+    SELECT * FROM RemoteWorkingPlatform WHERE workingPlatformId = ?;
 
 insertWorkDeclare:
     INSERT OR REPLACE
@@ -70,7 +119,7 @@ insertWorkDeclare:
           baseIncome  ,
           deliveries,
           month,
-          workingPlatform
+          workingPlatformId
     )
     VALUES(?, ?, ?,?,?,?,?,?);
 
@@ -107,7 +156,7 @@ insertWorkDeclare:
                    startTime,
                    endTime,
                    totalTime,
-                   workingPlatform,
+                   workingPlatformId,
                    baseWage,
                    extras,
                    delivers
@@ -156,9 +205,14 @@ insertWorkDeclare:
     getAllWorkDeclareData:
                 SELECT * FROM WorkDeclare ORDER BY workDeclareId DESC;
 
+    getAllWorkDeclareDataByPlatform:
+                SELECT * FROM WorkDeclare WHERE workingPlatformId = ? ORDER BY workDeclareId DESC;
+
     getAllShiftDataByType:
             SELECT * FROM Shift WHERE shiftType=? ORDER BY shiftId DESC;
 
     getMonthData:
-         SELECT * FROM WorkDeclare WHERE month=:theMonth ORDER BY workDeclareId DESC;
+          SELECT * FROM WorkDeclare WHERE (month=:theMonth) ORDER BY workDeclareId DESC;
 
+    getByPlatMonthData:
+          SELECT * FROM WorkDeclare WHERE (workingPlatformId=:workingPlatform AND month=:theMonth) ORDER BY workDeclareId DESC;

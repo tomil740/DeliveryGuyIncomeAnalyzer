@@ -40,12 +40,14 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.WorkingPlatformOptionMenuItem
+import me.saket.cascade.CascadeDropdownMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatformPick:(String)->Unit={},textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "") {
-    val theLst = mutableListOf<String>("Wolt","dominos","Mcdonalds","KFC","תן ביס","Add +")
-
+fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatformPick:(String)->Unit={},textColor:Color = MaterialTheme.colorScheme.onPrimary,navToBuild:()->Unit,context:String = "",
+                       theLst:List<WorkingPlatformOptionMenuItem> = listOf(),onGeneralStat:()->Unit={},onMyStat:()->Unit={}
+) {
     var isExpended by remember { mutableStateOf(false) }
 
     val arrowIcon = remember { mutableStateOf(Icons.Default.ArrowDropDown) }
@@ -100,7 +102,7 @@ fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatfo
                 )
                 {
                     Row(
-                        modifier = Modifier.width(150.dp)
+                        modifier = Modifier
                             .menuAnchor()
                     ) {
 
@@ -119,27 +121,37 @@ fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatfo
                             tint = textColor
                         )
                     }
-
-                    ExposedDropdownMenu(
+                    CascadeDropdownMenu(
                         expanded = isExpended,
                         onDismissRequest = { isExpended = false },
                         modifier = Modifier
-                            .height(150.dp)
                     ) {
-                        theLst.forEach {
-                            DropdownMenuItem(text = {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }, onClick = {
-                                //pick and update the UI state accordingly
-                                onPlatformPick(it)
-                                //theItem= ":$it"
-                                isExpended = false
-                            })
 
+                        for (i in theLst) {
+                            DropdownMenuItem(
+                                text = { Text(text = i.platformName) },
+                                children = {
+                                    for (t in i.workingZones) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = t) },
+                                            onClick = {
+                                                isExpended = false
+                                                //theItem = "${i.platformName}-$t"
+                                                onPlatformPick("${i.platformName}-$t")
+                                            }
+                                        )
+                                    }
+                                }
+                            )
                         }
+                        DropdownMenuItem(
+                            text = { Text(text = "Any") },
+                            onClick = {
+                                isExpended = false
+                                onPlatformPick("Any")
+                              //  theItem = "Any"
+                            }
+                        )
                     }
                 }
             }
@@ -152,5 +164,5 @@ fun PlatformArbitrator(showHeader:Boolean=true,pickedPlatform:String="",onPlatfo
 @Preview
 @Composable
 fun preview() {
-    PlatformArbitrator(navToBuild = {})
+   // PlatformArbitrator(navToBuild = {})
 }

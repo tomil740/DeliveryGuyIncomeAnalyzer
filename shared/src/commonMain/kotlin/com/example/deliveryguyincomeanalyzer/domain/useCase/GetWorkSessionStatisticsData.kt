@@ -5,8 +5,8 @@ import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInt
 
 class GetWorkSessionStatisticsData (val repository: Repository) {
     operator fun invoke(workingPlatform: String): SumObjectInterface {
-       val a = repository.getAllWorkDeclareData()
-        val b= SumDomainData().getSummarizesDomainObject(a)
+       val a = repository.getAllWorkDeclareData(workingPlatform)
+        val b = SumDomainData().getSummarizesDomainObject(a)
 
         return SumDomainData().getAverageDomainObject(a) .toWorkSum(
 

@@ -20,24 +20,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.WorkingPlatformOptionMenuItem
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
-fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={},onOpenArchiveMenu:()->Unit={},comparableName:String="April 2024, Any",textColor: Color=MaterialTheme.colorScheme.onPrimary) {
+fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu:()->Unit={}, pickedPlatformComparable:String="April 2024, Any",
+                               platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(), platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
+                               onItemPick:(String)->Unit, textColor: Color=MaterialTheme.colorScheme.onPrimary) {
     val firstMenu = listOf<String>("MyStatistics","GeneralStatistics")
-    val platformsLst = listOf<String>("All","Wolt", "dominos", "Mcdonalds", "KFC", "תן ביס")
 
     var isExpended by remember { mutableStateOf(false) }
 
     val arrowIcon = remember { mutableStateOf(Icons.Default.ArrowDropDown) }
 
-    var theItem by remember { mutableStateOf(comparableName) }
+    var theItem =
+        " : $pickedPlatformComparable"
 
-    LaunchedEffect(key1 = comparableName) {
-        theItem=comparableName
-    }
+
 
     if (isExpended) {
         arrowIcon.value = Icons.Default.KeyboardArrowUp
@@ -86,16 +86,34 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={},onOpenArchiveMenu:
                 DropdownMenuItem(
                     text = { Text(text = i) },
                     children = {
-                        for (t in platformsLst) {
+                        var thePlatformsLst = platformsMenu1
+                        if(i =="MyStatistics")
+                            thePlatformsLst=platformsMenu1.plus(platformsMenu2)
+                        for (t in thePlatformsLst) {
                             DropdownMenuItem(
-                                text = { Text(text = t) },
-                                onClick = {
-                                    onCloseArchiveMenu()
-                                    isExpended = false
-                                    theItem = "$i->$t"
+                                text = { Text(text = t.platformName) },
+                                children = {
+                                    for (j in t.workingZones) {
+                                        DropdownMenuItem(
+                                            text = { Text(text = j) },
+                                            onClick = {
+                                                isExpended = false
+                                                onItemPick("${t.platformName}-$j")
+                                                theItem = "${t.platformName}->$j"
+                                            }
+                                        )
+                                    }
                                 }
                             )
                         }
+                        DropdownMenuItem(
+                            text = { Text(text = "Any") },
+                            onClick = {
+                                isExpended = false
+                                onItemPick("Any")
+                                 theItem = "Any"
+                            }
+                        )
                     }
                 )
             }

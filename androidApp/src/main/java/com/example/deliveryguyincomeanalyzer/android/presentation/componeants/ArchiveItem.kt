@@ -42,14 +42,14 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
                 ,subSizeParam:Float, subValueParam:Float,onHeaderClick : () ->Unit
                 ,modifier: Modifier=Modifier) {
 
-    var isDefaultBar by remember { mutableStateOf(true) }
+    var isDefaultBar by remember { mutableStateOf(false) }
     var isExpandet by remember { mutableStateOf(false) }
     var barSize by remember { mutableStateOf(barSizeParam) }
     var barValue by remember { mutableStateOf(barValueParam) }
     var subSize by remember { mutableStateOf(subSizeParam) }
     var subValue by remember { mutableStateOf(subValueParam) }
 
-    LaunchedEffect(key1 = objectName) {
+    LaunchedEffect(key1 = objectName,onHeaderClick,barValueParam) {
          isDefaultBar =true
          isExpandet =false
          barSize =barSizeParam
@@ -138,7 +138,7 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 UnitDisplay(
-                    amount = subSize.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subValue.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Default.AccountBox,
                     amountColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     amountTextStyle = MaterialTheme.typography.titleMedium,
@@ -150,7 +150,7 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
                 )
 
                 UnitDisplay(
-                    amount = subValue.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
+                    amount = subSize.toBigDecimal().setScale(2, RoundingMode.UP).toFloat(),
                     unitIcon = Icons.Filled.Build,
                     amountColor = MaterialTheme.colorScheme.onSecondaryContainer,
                     amountTextStyle = MaterialTheme.typography.titleMedium,

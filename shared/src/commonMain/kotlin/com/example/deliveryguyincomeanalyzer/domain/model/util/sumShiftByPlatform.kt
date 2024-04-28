@@ -14,10 +14,15 @@ fun sumShiftsByPlatform(shifts : List<ShiftDomain>,dataPerHour:List<DataPerHourD
         val shiftsSumNoon = mutableListOf<SumObj>()
         val shiftsSumNight = mutableListOf<SumObj>()
 
+
     //get new average data per hour
+    val theData = shifts.filter { it.startTime!=it.endTime }
 
+    var a:ShiftsSumByType?=null
+    var b:ShiftsSumByType?=null
+    var c:ShiftsSumByType?=null
 
-        shifts.forEach {
+    theData.forEach {
             when (it.shiftType) {
                 "Morning" -> {
                     shiftsSumMorning.add(
@@ -33,55 +38,94 @@ fun sumShiftsByPlatform(shifts : List<ShiftDomain>,dataPerHour:List<DataPerHourD
                 }
             }
         }
+    val sumMorning: ShiftDomain
+    var extraIncome: Float = 1f
+    var baseIncome: Float = 1f
+    var delivers: Float = 1f
+    var totalTime = 1f
+    if(shiftsSumMorning.isNotEmpty()) {
         //sum each shift type data
-        val sumMorning: ShiftDomain
-        var extraIncome: Float= 0f
-        var baseIncome: Float = 0f
-        var delivers:Float =0f
-        var totalTime = 0f
-        for (i in shiftsSumMorning){
-           extraIncome+=i.extraIncome
-            baseIncome+=i.baseIncome
-            delivers+=i.delivers
-            totalTime+=i.totalTime
+        for (i in shiftsSumMorning) {
+            extraIncome += i.extraIncome
+            baseIncome += i.baseIncome
+            delivers += i.delivers
+            totalTime += i.totalTime
         }
-    //all of the hard coded data will be solve when implemnting the working platform object
-        sumMorning = ShiftDomain(workingPlatform = ".", shiftType = "Morning", startTime = LocalDateTime(date = LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)), endTime =  LocalDateTime(LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)),
-            time = totalTime/shiftsSumMorning.size,baseIncome/shiftsSumMorning.size,extraIncome/shiftsSumMorning.size,
-            (delivers/shiftsSumMorning.size).toInt(), dataPerHour = dataPerHour
+        //all of the hard coded data will be solve when implemnting the working platform object
+        sumMorning = ShiftDomain(
+            workingPlatform = shiftsSumMorning.first().platform,
+            shiftType = "Morning",
+            startTime = shiftsSumMorning.first().startTime,
+            endTime = shiftsSumMorning.last().endTime,
+            time = totalTime / shiftsSumMorning.size,
+            baseIncome / shiftsSumMorning.size,
+            extraIncome / shiftsSumMorning.size,
+            (delivers / shiftsSumMorning.size).toInt(),
+            dataPerHour = dataPerHour
         )
-      val sumNoon:ShiftDomain
-         extraIncome = 0f
-         baseIncome = 0f
-         delivers =0f
-         totalTime = 0f
-    for (i in shiftsSumNoon){
-        extraIncome+=i.extraIncome
-        baseIncome+=i.baseIncome
-        delivers+=i.delivers
-        totalTime+=i.totalTime
-    }
-    sumNoon = ShiftDomain(workingPlatform = ".", shiftType = "Noon",startTime = LocalDateTime(date = LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)), endTime =  LocalDateTime(LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)),
-        time = totalTime/shiftsSumMorning.size,baseIncome/shiftsSumMorning.size,extraIncome/shiftsSumMorning.size,
-        (delivers/shiftsSumMorning.size).toInt(), dataPerHour = dataPerHour
-    )
-        val sumNight:ShiftDomain
-        extraIncome = 0f
-        baseIncome = 0f
-        delivers =0f
-        totalTime = 0f
-    for (i in shiftsSumNight){
-        extraIncome+=i.extraIncome
-        baseIncome+=i.baseIncome
-        delivers+=i.delivers
-        totalTime+=i.totalTime
-    }
-        sumNight = ShiftDomain(workingPlatform = "Wolt", shiftType = "Night", startTime = LocalDateTime(date = LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)), endTime =  LocalDateTime(LocalDate(year = 2024, month = Month.APRIL,3), time =LocalTime( hour = 8, minute = 2)),
-            time = totalTime/shiftsSumMorning.size,baseIncome/shiftsSumMorning.size,extraIncome/shiftsSumMorning.size,
-            (delivers/shiftsSumMorning.size).toInt(), dataPerHour = dataPerHour
-        )
+        a =ShiftsSumByType(type = "Morning", totalShifts = shiftsSumMorning.size, shiftSum = sumMorning.toShiftSum(), shiftSums = shiftsSumMorning)
 
-    return listOf(ShiftsSumByType(type = "Morning", totalShifts = shiftsSumMorning.size, shiftSum = sumMorning.toShiftSum(), shiftSums = shiftsSumMorning),
-            ShiftsSumByType(type = "Noon", totalShifts = shiftsSumNoon.size, shiftSum = sumNoon.toShiftSum(), shiftSums = shiftsSumNoon),
-            ShiftsSumByType(type = "Night", totalShifts = shiftsSumNight.size, shiftSum = sumNight.toShiftSum(), shiftSums = shiftsSumNight))
+    }
+    if(shiftsSumNoon.isNotEmpty()) {
+        extraIncome = 1f
+        baseIncome = 1f
+        delivers = 1f
+        totalTime = 1f
+        for (i in shiftsSumNoon) {
+            extraIncome += i.extraIncome
+            baseIncome += i.baseIncome
+            delivers += i.delivers
+            totalTime += i.totalTime
+        }
+        val sumNoon: ShiftDomain = ShiftDomain(
+            workingPlatform = shiftsSumNoon.first().platform,
+            shiftType = "Noon",
+            startTime = shiftsSumNoon.first().startTime,
+            endTime = shiftsSumNoon.last().endTime,
+            time = totalTime / shiftsSumNoon.size,
+            baseIncome / shiftsSumNoon.size,
+            extraIncome / shiftsSumNoon.size,
+            (delivers / shiftsSumNoon.size).toInt(),
+            dataPerHour = dataPerHour
+        )
+        b = ShiftsSumByType(type = "Noon", totalShifts = shiftsSumNoon.size, shiftSum = sumNoon.toShiftSum(), shiftSums = shiftsSumNoon)
+
+    }
+    if(shiftsSumNight.isNotEmpty()) {
+        extraIncome = 1f
+        baseIncome = 1f
+        delivers = 1f
+        totalTime = 1f
+        for (i in shiftsSumNight) {
+            extraIncome += i.extraIncome
+            baseIncome += i.baseIncome
+            delivers += i.delivers
+            totalTime += i.totalTime
+        }
+        val sumNight: ShiftDomain = ShiftDomain(
+            workingPlatform = shiftsSumNight.first().platform,
+            shiftType = "Night",
+            startTime = shiftsSumNight.first().startTime,
+            endTime = shiftsSumNight.last().endTime,
+            time = totalTime / shiftsSumNight.size,
+            baseIncome / shiftsSumNight.size,
+            extraIncome / shiftsSumNight.size,
+            (delivers / shiftsSumNight.size).toInt(),
+            dataPerHour = dataPerHour
+        )
+        c =  ShiftsSumByType(type = "Night", totalShifts = shiftsSumNight.size, shiftSum = sumNight.toShiftSum(), shiftSums = shiftsSumNight)
+
+    }
+
+
+    val result = mutableListOf<ShiftsSumByType>()
+
+    if(a?.totalShifts !=null && a.totalShifts!=0)
+        result.add(a)
+    if(b?.totalShifts !=null && b.totalShifts!=0)
+        result.add(b)
+    if(c?.totalShifts !=null && c.totalShifts!=0)
+        result.add(c)
+
+    return result
     }

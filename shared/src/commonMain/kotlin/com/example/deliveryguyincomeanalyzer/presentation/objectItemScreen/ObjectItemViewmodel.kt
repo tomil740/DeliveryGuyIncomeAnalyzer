@@ -9,6 +9,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.util.getTimeDifferent
 import com.example.deliveryguyincomeanalyzer.domain.useCase.ObjectItemUseCases
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getAllTimeSumObj
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,53 +51,48 @@ class ObjectItemViewmodel(private val objectItemUseCases: ObjectItemUseCases):Vi
     )
     )
 
-
-
-
+    private val uiMessage = Channel<String>()
 
     private val _uiState = MutableStateFlow(ObjectItemUiState(objectValueSum = comparedObj.value,
-        objectComparableSum = comparedObj.value, comparableDataMenu = comparedObj.value, showMenu = false))
+        objectComparableSum = comparedObj.value, comparableDataMenu = comparedObj.value, showComparableMenu = false,
+        workingPlatformRemoteMenu = listOf(), workingPlatformCustomMenu = listOf(), uiMessage = uiMessage
+    ))
 
     val uiState = combine(valuedObj,comparedObj,_uiState){
         valueObj,comparedObj,_uiState  ->
-       _uiState.copy(objectComparableSum = comparedObj, objectValueSum = valueObj
-           /*
-           objectValueSum =
-           SumObj(startTime = valueObj.startTime, endTime =  valueObj.endTime,
-               totalTime = valueObj.totalTime,
-               platform = valuedObjPlatform,
-               baseIncome = valueObj.baseIncome, extraIncome = valueObj.extraIncome, totalIncome = valueObj.totalIncome, delivers = valueObj.delivers
-               , averageIncomePerDelivery = valueObj.averageIncomePerDelivery,
-               averageIncomePerHour =valueObj.averageIncomePerHour,
-               averageIncomeSubObj = 4f,objectType = valueObj.objectType, shiftType = valueObj.shiftType, objectName = valueObj.objectName, subObjName = valueObj.subObjName,
-               subObjects = valueObj.subObjects
-           )
-
-            */
-
-
-
-       )
+        _uiState.copy(objectComparableSum = comparedObj, objectValueSum = valueObj,uiMessage=uiMessage)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), _uiState.value)
-
-
-
-
 
     init {
         viewModelScope.launch {
-            onEvent(ObjectItemEvents.GetValueAllArchive(uiState.value.objectValueSum.platform))
+
+            //onEvent(ObjectItemEvents.GetValueAllArchive(uiState.value.objectValueSum.platform))
 
             launch {
-           valuedObj.collect{
+                valuedObj.collect{
                //this will execuate before the combine function of the state , cause geting the old data comparable...
+
                delay(10)
-               onEvent(ObjectItemEvents.GetComparableStatistics(it.platform))
-           }
+               //onEvent(ObjectItemEvents.GetComparableStatistics(it.platform))
+
+                }
+            }
+
+
+            launch {
+                objectItemUseCases.getWorkingPlatformMenu.invoke(false).collect { theLSt->
+                    _uiState.update {it.copy(workingPlatformCustomMenu = theLSt)  }
+                }
+            }
+            launch {
+                objectItemUseCases.getWorkingPlatformMenu.invoke(true).collect { theLSt->
+                    _uiState.update {it.copy(workingPlatformRemoteMenu = theLSt)}
+                }
             }
 
         }
     }
+
 
 
     fun onEvent(event:ObjectItemEvents){
@@ -140,20 +136,37 @@ class ObjectItemViewmodel(private val objectItemUseCases: ObjectItemUseCases):Vi
 
 
                     SumObjectsType.AllTimeSum -> {
-                       uiState.value.objectValueSum
+                        val a = objectItemUseCases.getAllTimeMonthData.invoke(event.platform)
+                        val monthSums = mutableListOf<WorkSumDomain>()
+
+                        for (i in a){
+                            if(i.data.size > 0)//the minimum set to the platform)
+                                monthSums.add(objectItemUseCases.sumDomainData.getSummarizesDomainObject(i.data))
+                        }
+
+                        objectItemUseCases.sumDomainData.getSummarizesDomainObject(monthSums).toWorkSum().copy(objectName = "MyStatistics")
                     }
                 }
-                comparedObj.update { theData }
+                if(theData.totalTime==-1f){
+
+                    onEvent(ObjectItemEvents.SendUiMessage(
+                        "There is no match data to present from the local data archive for the ${event.platform} working platform"))
+                }else {
+                    comparedObj.update { theData }
+                }
             }
 
-            ObjectItemEvents.OnCloseMenu -> {
-                _uiState.update { it.copy(showMenu = false) }
+            ObjectItemEvents.OnCloseComparableMenu -> {
+                _uiState.update { it.copy(showComparableMenu = false) }
             }
 
-            is ObjectItemEvents.OnMenuPick -> {
-                if (valuedObj.value.objectType == event.obj.objectType){
+            is ObjectItemEvents.OnArchiveComparableMenuPick -> {
+                if(event.obj==null){
+                    _uiState.update { it.copy(showComparableMenu = false) }
+                }
+                else if (valuedObj.value.objectType == event.obj.objectType){
                     comparedObj.update { event.obj }
-                    _uiState.update { it.copy(showMenu = false) }
+                    _uiState.update { it.copy(showComparableMenu = false) }
 
                 }else{
                     _uiState.update { it.copy(
@@ -162,13 +175,13 @@ class ObjectItemViewmodel(private val objectItemUseCases: ObjectItemUseCases):Vi
                 }
             }
 
-            ObjectItemEvents.OnOpenMenu -> {
+            ObjectItemEvents.OnOpenComparableMenu -> {
                 val a = objectItemUseCases.getAllTimeMonthData.invoke(uiState.value.objectValueSum.platform)
 
                 val b = getAllTimeSumObj(a)
 
                 _uiState.update { it.copy(
-                    comparableDataMenu = b, showMenu = true
+                    comparableDataMenu = b, showComparableMenu = true
                 ) }
             }
 
@@ -176,36 +189,66 @@ class ObjectItemViewmodel(private val objectItemUseCases: ObjectItemUseCases):Vi
                 viewModelScope.launch {
                     //get all of the data in month objects
                     val a = objectItemUseCases.getAllTimeMonthData.invoke(event.workingPlatform)
+                    if(a.isEmpty()) {
+                        onEvent(
+                            ObjectItemEvents.SendUiMessage(
+                                "There is no match data to present from the local data archive for the ${event.workingPlatform} working platform"
+                            )
+                        )
+                    }else {
+                        val b = getAllTimeSumObj(a, event.workingPlatform)
 
-                    val b = getAllTimeSumObj(a)
+                        valuedObj.value = b
 
-                    valuedObj.value =b
-
-                    comparedObj.value=b
-
-                    //_uiState.update { it.copy(objectValueSum = b) }
+                        comparedObj.value = b
+                    }
                 }
             }
 
             is ObjectItemEvents.GetComparableMenuAllArchive -> {
+                println("working->-.work ${event.workingPlatform}")
                 viewModelScope.launch {
                     //get all of the data in month objects
                     val a = objectItemUseCases.getAllTimeMonthData.invoke(event.workingPlatform)
 
                     val b = getAllTimeSumObj(a)
+                    if (b.totalTime == -1f) {
+                        //send a snack bar message to the user , there is no match data
+                        //to present from the local data archive for $event.workingplatform pick...
+                        onEvent(ObjectItemEvents.SendUiMessage(
+                            "There is no match data to compare from the local data archive for the ${event.workingPlatform} working platform"))
+                    }else {
 
-                    _uiState.update {
-                        it.copy(
-                            comparableDataMenu = b
-                        )
+                        _uiState.update {
+                            it.copy(
+                                comparableDataMenu = b
+                            )
+                        }
                     }
+                }
+            }
+            is ObjectItemEvents.OnValueWorkingPlatformPick->{
+                //need to get the data , check if there is extra data override and update the state
+              //  objectItemUseCases.
+            }
+            /*
+            is ObjectItemEvents.OnGeneralStatWorkingPlatformMenu -> {
+                val a = objectItemUseCases.getWorkingPlatformMenu.invoke(true)
+                _uiState.update { it.copy(workingPlatformRemoteMenu = a) }
+            }
+            is ObjectItemEvents.OnMyStatWorkingPlatformMenu -> {
+                val a = objectItemUseCases.getWorkingPlatformMenu.invoke(false)
+                _uiState.update { it.copy(workingPlatformRemoteMenu = a) }
+            }
+
+             */
+            is ObjectItemEvents.SendUiMessage -> {
+                viewModelScope.launch {
+                    uiMessage.send(event.mess)
                 }
             }
         }
     }
-
-
-
 
 
 

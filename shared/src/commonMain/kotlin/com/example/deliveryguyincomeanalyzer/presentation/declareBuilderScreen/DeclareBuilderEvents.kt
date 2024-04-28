@@ -10,5 +10,7 @@ sealed class DeclareBuilderEvents() {
     data class saveLiveBuilderState(val liveBuilderState: LiveBuilderState):DeclareBuilderEvents()
     object getLiveBuilderState:DeclareBuilderEvents()
 
-    object deleteLiveBuilderState:DeclareBuilderEvents()
+    object DeleteLiveBuilderState:DeclareBuilderEvents()
+
+    data class OnWorkingPlatfomPick(val workingPlatId : String):DeclareBuilderEvents()
 }

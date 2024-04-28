@@ -106,7 +106,8 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary, navToBuild = {navigator.push(PlatformBuilderScreenClass())})
+                        PlatformArbitrator(textColor = MaterialTheme.colorScheme.primary,
+                            navToBuild = {navigator.push(PlatformBuilderScreenClass())})
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
