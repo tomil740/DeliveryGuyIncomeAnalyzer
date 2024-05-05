@@ -39,6 +39,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollect
 fun ArchiveMenu(valueObjectType:SumObjectsType,menuObj:SumObjectInterface,workingPlatformRemoteMenu:List<WorkingPlatformOptionMenuItem>,
                 workingPlatformCustomMenu:List<WorkingPlatformOptionMenuItem>,
                 onObjectPick:(SumObjectInterface?)->Unit,onWorkingPlatformPick:(String)->Unit,
+                comparableObj : SumObjectInterface,
                 modifier:Modifier) {
             Column(
                 modifier = Modifier
@@ -85,7 +86,7 @@ fun ArchiveMenu(valueObjectType:SumObjectsType,menuObj:SumObjectInterface,workin
                             textColor = MaterialTheme.colorScheme.primary,
                             navToBuild = {},
                             pickedPlatform = menuObj.platform,
-                            onPlatformPick = { onWorkingPlatformPick("Wolt-Center") },
+                            onPlatformPick = { onWorkingPlatformPick(it) },
                             theLst = workingPlatformRemoteMenu.plus(
                                 workingPlatformCustomMenu
                             )
@@ -108,6 +109,12 @@ fun ArchiveMenu(valueObjectType:SumObjectsType,menuObj:SumObjectInterface,workin
                                 barValueParam = theObj.totalIncome,
                                 subSizeParam = theObj.totalTime * 1.3f,
                                 subValueParam = theObj.totalTime,
+                                perHourVal = theObj.averageIncomePerHour,
+                                perHourComparable = comparableObj.averageIncomePerHour,
+                                perDeliveryVal = theObj.averageIncomePerDelivery,
+                                perDeliveryComparable = comparableObj.averageIncomePerDelivery,
+                                perSessionVal = theObj.averageIncomeSubObj,
+                                perSessionComparable = comparableObj.averageIncomeSubObj,
                                 onHeaderClick = {
                                    onObjectPick(theObj)
                                 },

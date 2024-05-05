@@ -7,7 +7,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.util.getShiftType
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
-//when the workingPlatform will be an object , it will include all of the hard coded data
+//when the workingPlatformId will be an object , it will include all of the hard coded data
 fun shiftDataToShiftDomain(shift: Shift,workingPlatform: String,workPerHour : List<DataPerHourDomain>):ShiftDomain{
     return ShiftDomain(
         workingPlatform = workingPlatform,

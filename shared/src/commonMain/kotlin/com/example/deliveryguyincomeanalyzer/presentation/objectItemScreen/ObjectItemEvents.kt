@@ -5,7 +5,8 @@ import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInt
 sealed class ObjectItemEvents {
     data class GetMonthSum(val theMonth:String):ObjectItemEvents()
     //we will define the comparable picker events ... to this screen
-    data class GetComparableStatistics(val platform:String):ObjectItemEvents()
+    data class GetLocalComparableStatistics(val platform:String):ObjectItemEvents()
+    data class GetGeneralStatisticsComparable(val platform:String):ObjectItemEvents()
     data class InitializeAnObject(val theSum:SumObjectInterface):ObjectItemEvents()
     data class GetValueAllArchive(val workingPlatform: String):ObjectItemEvents()
     data class GetComparableMenuAllArchive(val workingPlatform: String):ObjectItemEvents()
@@ -14,6 +15,5 @@ sealed class ObjectItemEvents {
     data class OnArchiveComparableMenuPick(val obj:SumObjectInterface?):ObjectItemEvents()
     data class OnValueWorkingPlatformPick(val workingPlatformId:String):ObjectItemEvents()
     data class  SendUiMessage(val mess:String):ObjectItemEvents()
-    //data object OnMyStatWorkingPlatformMenu : ObjectItemEvents()
-    //data object OnGeneralStatWorkingPlatformMenu : ObjectItemEvents()
+    data object UpdateRemoteSumObjStatistics:ObjectItemEvents()
 }

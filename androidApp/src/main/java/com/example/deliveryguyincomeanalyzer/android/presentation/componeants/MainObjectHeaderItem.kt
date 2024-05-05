@@ -30,9 +30,10 @@ import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObject
 @Composable
 fun MainObjectHeaderItem(
     mainObjectHeaderItemData: MainObjectHeaderItemData,
+    isBuilderWorkSession:Boolean = false,
     onPlatformPick:(String)->Unit,
     onMainObjectClick:(String)->Unit,
-    onComparablePick:(String)->Unit={},
+    onGeneralStatPick:(String)->Unit={},
     onMyStatPick:(String)->Unit={},
     isBuilder:Boolean = false,
     isPlatform:Boolean=false,
@@ -76,6 +77,7 @@ fun MainObjectHeaderItem(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
                 PlatformArbitrator(
+                    isBuilderWorkSession=isBuilderWorkSession,
                     showHeader = false,
                     navToBuild = navToPlatformBuilder,
                     context = navToPlatformContext,
@@ -102,9 +104,11 @@ fun MainObjectHeaderItem(
                         theLst = mainObjectHeaderItemData.platformsMenu1.plus(mainObjectHeaderItemData.platformsMenu2)
                     )
                 else {
-                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()}, onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()},
+                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()},
+                        sumObjectSourceType = mainObjectHeaderItemData.ComparableObjectSourceType,
+                        onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()},
                         pickedPlatformComparable =mainObjectHeaderItemData.pickedPlatformComparable,platformsMenu1=mainObjectHeaderItemData.platformsMenu1 ,
-                        platformsMenu2=mainObjectHeaderItemData.platformsMenu2, onItemPick = {onMyStatPick(it)})
+                        platformsMenu2=mainObjectHeaderItemData.platformsMenu2, onMyStatItemPick = {onMyStatPick(it)}, onGeneralStatPick = {onGeneralStatPick(it)})
                 }
             }
             if (isPlatform) {

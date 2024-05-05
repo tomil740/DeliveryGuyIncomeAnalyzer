@@ -1,8 +1,11 @@
 package com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels
 
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
+
 //when it will be compose multiplatform this kind of data will be in the shared module
 data class MainObjectHeaderItemData(
     val objectName : String="",
+    val ComparableObjectSourceType: SumObjectSourceType = SumObjectSourceType.Archive,
     val platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(),
     val platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
     val pickedPlatform:String="",

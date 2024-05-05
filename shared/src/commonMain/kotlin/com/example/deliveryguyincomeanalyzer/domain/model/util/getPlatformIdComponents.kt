@@ -7,7 +7,7 @@ data class PlatformIdComponents(
 fun getPlatformIdComponents(platformId:String):PlatformIdComponents{
     val a= platformId.indexOf('-')
     val name = platformId.substring(0,a)
-    val zone =platformId.substring(a)
+    val zone =platformId.substring(a+1)
 
     return  PlatformIdComponents(
         platformName = name, workingZone = zone

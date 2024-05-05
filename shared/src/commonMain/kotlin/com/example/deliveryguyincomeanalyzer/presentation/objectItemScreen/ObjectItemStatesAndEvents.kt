@@ -14,4 +14,5 @@ data class ObjectItemStatesAndEvents(
     val onMyStatPick:(String)->Unit,
     val onComparablePlatform:(String)->Unit,
     val onValueWorkingPlatform: (String)->Unit,
+    val onGeneralStatisticsPick:(String)->Unit
 )

@@ -5,7 +5,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.Wor
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
-import com.example.deliveryguyincomeanalyzer.domain.useCase.MonthSumData
+import com.example.deliveryguyincomeanalyzer.domain.useCase.GetAllTimeMonthData
 import com.example.deliveryguyincomeanalyzer.domain.useCase.SumDomainData
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -21,7 +21,7 @@ in order of mark this object to the UI as empty ...
 
  */
 
-fun getAllTimeSumObj(a: List<MonthSumData>,workingPlat:String?=null):SumObjectInterface{
+fun getAllTimeSumObj(a: List<GetAllTimeMonthData.MonthSumData>, workingPlat:String?=null):SumObjectInterface{
     //store the data sum we will generate from each month workSession data list
     val sumObjList = mutableListOf<WorkSumDomain>()
     for (month in a){
@@ -38,7 +38,7 @@ fun getAllTimeSumObj(a: List<MonthSumData>,workingPlat:String?=null):SumObjectIn
                     extraIncome = 1f,
                     yearAndMonth = month.month,
                     dayOfMonth = 1,
-                    workingPlatform = workingPlat ?: "",
+                    workingPlatformId = workingPlat ?: "",
                     workPerHour = listOf(),
                     shifts = listOf(),
                     objectsType = SumObjectsType.MonthSum,

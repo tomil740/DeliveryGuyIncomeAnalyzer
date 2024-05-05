@@ -1,6 +1,7 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +41,11 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.Ma
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.VerticalBarProgressItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.OverViewScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
+import com.example.deliveryguyincomeanalyzer.android.presentation.screens.util.ArchiveMenu
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.uiSubModelMapers.sumObjectToMainObjectHeaderItemData
 import com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen.DeclareBuilderStatesAndEvents
+import kotlinx.coroutines.flow.consumeAsFlow
 
 /*
 DeclareLiveBuilderScreen :
@@ -57,8 +64,7 @@ the result will be a little bit wired UI object that works in practice but will 
 @Composable
 fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAndEvents: DeclareBuilderStatesAndEvents) {
 
-   // declareBuilderStatesAndEvents.onPickWorkingPlatform("Domin")
-
+    val snackBarHostState = remember { SnackbarHostState() }
     val navigator = LocalNavigator.current
 
     var showActionOptions by remember { mutableStateOf(false) }
@@ -71,6 +77,9 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
     //to use the floating expandet item arrow mark , we must implement it in box layout
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         floatingActionButton = {
             AnimatedVisibility (showActionOptions) {
                 Column(modifier = Modifier.offset(x = -35.dp, y = -20.dp)) {
@@ -123,8 +132,15 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
         Box(modifier = Modifier.padding(paddingVal),  contentAlignment = Alignment.TopEnd) {
 
             Column(modifier.padding(paddingVal)) {
+
+                LaunchedEffect(declareBuilderStatesAndEvents.uiState.uiMessage) {
+                    declareBuilderStatesAndEvents.uiState.uiMessage.consumeAsFlow().collect{
+                        snackBarHostState.showSnackbar(it, duration = SnackbarDuration.Long)
+                    }
+                }
+
                 MainObjectHeaderItem(
-                    isBuilder = true,
+                    isBuilderWorkSession = true,
                     navToPlatformBuilder = {
                         if (navigator != null) {
                             navigator.push(PlatformBuilderScreenClass())
@@ -135,9 +151,13 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
                    mainObjectHeaderItemData = sumObjectToMainObjectHeaderItemData(value = declareBuilderStatesAndEvents.uiState.currentSum,
                        comparable = declareBuilderStatesAndEvents.uiState.comparableObj,
                        platformOptionMenu1 = declareBuilderStatesAndEvents.uiState.workingPlatformRemoteMenu,
-                       platformOptionMenu2 = declareBuilderStatesAndEvents.uiState.workingPlatformCustomMenu
+                       platformOptionMenu2 = declareBuilderStatesAndEvents.uiState.workingPlatformCustomMenu,
+                       showArchiveMenu = { declareBuilderStatesAndEvents.onOpenComparableArchiveMenu() },
+                       hideArchiveMenu = { declareBuilderStatesAndEvents.onCloseComparableArchiveMenu() },
                    ),
                     onMainObjectClick = {},
+                    onGeneralStatPick = {declareBuilderStatesAndEvents.onComparablePlatform(it)},
+                    onMyStatPick = {declareBuilderStatesAndEvents.onComparableStatPick(it)},
                     modifier = modifier)
 
                 ExtrasTextField(commonExras = listOf("1", "5", "10", "15", "20"), onSend = declareBuilderStatesAndEvents.onAddDeliveryItem)
@@ -186,6 +206,21 @@ fun DeclareLiveBuilderScreen(modifier: Modifier=Modifier,declareBuilderStatesAnd
 
             }
         }
+    }
 
+    Column(modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+
+        AnimatedVisibility(visible = declareBuilderStatesAndEvents.uiState.showComparableMenu) {
+            ArchiveMenu(
+                valueObjectType = SumObjectsType.WorkSession,
+                menuObj = declareBuilderStatesAndEvents.uiState.comparableMenuData,
+                workingPlatformRemoteMenu = declareBuilderStatesAndEvents.uiState.workingPlatformRemoteMenu,
+                workingPlatformCustomMenu = declareBuilderStatesAndEvents.uiState.workingPlatformCustomMenu,
+                onObjectPick = {declareBuilderStatesAndEvents.onArchiveComparableMenuPick(it)},
+                onWorkingPlatformPick = {declareBuilderStatesAndEvents.onComparablePlatform(it)},
+                comparableObj = declareBuilderStatesAndEvents.uiState.comparableObj,
+                modifier = modifier
+            )
+        }
     }
 }

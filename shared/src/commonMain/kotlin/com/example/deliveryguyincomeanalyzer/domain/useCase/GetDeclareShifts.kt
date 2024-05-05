@@ -28,7 +28,6 @@ class GetDeclareShifts {
         shiftsFrames: List<ShiftFrame>
     ): ResultObj{
 
-        //new try :
         val theStartDate = shiftsFrames[0].startTime.date
         var morningS = shiftsFrames[0].startTime.hour+(shiftsFrames[0].startTime.minute/60f)
         var morningE=shiftsFrames[0].endTime.hour+(shiftsFrames[0].endTime.minute/60f)
@@ -84,28 +83,144 @@ class GetDeclareShifts {
         /*
         now to each value data object we will check the same , if it is at different date
         */
+        /*
+        allicate the matched data to each shift from each delivery
+        The reason for do that instand of jsut using the allready calculated dataperhour accordingly , is because
+        here I will get the most accurate data as possiable
+         */
         var deliveries = 0
         var extras = 0f
         var deliveries1 = 0
         var extras1 = 0f
         var deliveries2 = 0
         var extras2 = 0f
-        for (i in liveBuilderState.deliversItem){
-            var theTime=i.time.hour+(i.time.minute/60f)
-            if(dataStart < i.time.date){
-                theTime+=24
+
+        //in order of using this use case as well with generalStatistics, that dosnt have the delivery items
+        //we will put another option to calculate the shift data by the dataPerhour (which is less accurate)
+        if(liveBuilderState.deliversItem.isEmpty()){
+          //for this calculation we will make some use of an average data to any unfull hour of an shift by use of the closeset data average
+            for (i in dataPerHourDomain) {
+                var theTime = i.hour.toFloat()
+
+                if (theTime in dataMorningS..<dataMorningE) {
+                    deliveries += i.delivers
+                    extras += i.extraIncome
+                } else if (theTime in dataNoonS..<dataNoonE) {
+                    deliveries1 += 1
+                    extras1 += i.extraIncome
+                } else if (theTime in dataNightS..<dataNightE) {
+                    deliveries2 += i.delivers
+                    extras2 += i.extraIncome
+                }
             }
-            if(theTime in dataMorningS..<dataMorningE){
-                deliveries+=1
-                extras+=i.extra
+
+            if ((dataMorningS.toInt()).toFloat() != dataMorningS){
+                if(deliveries != 0 || extras != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataMorningS.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataMorningS%1f
+
+                    extras+=theShare*matchData.extraIncome
+                    deliveries+=(theShare*matchData.delivers).toInt()
+                }
             }
-            else if(theTime in dataNoonS..<dataNoonE){
-                deliveries1+=1
-                extras1+=i.extra
+            if ((dataMorningE.toInt()).toFloat() != dataMorningE){
+                if(deliveries != 0 || extras != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataMorningE.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataMorningE%1f
+
+                    extras+=theShare*matchData.extraIncome
+                    deliveries+=(theShare*matchData.delivers).toInt()
+                }
             }
-            else if(theTime in dataNightS..<dataNightE){
-                deliveries2+=1
-                extras2+=i.extra
+            if ((dataNoonS.toInt()).toFloat() != dataNoonS){
+                if(deliveries1 != 0 || extras1 != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataNoonS.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataNoonS%1f
+
+                    extras1+=theShare*matchData.extraIncome
+                    deliveries1+=(theShare*matchData.delivers).toInt()
+                }
+            }
+            if ((dataNoonE.toInt()).toFloat() != dataNoonE){
+                if(deliveries1 != 0 || extras1 != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataNoonE.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataNoonE%1f
+
+                    extras1+=theShare*matchData.extraIncome
+                    deliveries1+=(theShare*matchData.delivers).toInt()
+                }
+            }
+            if ((dataNightS.toInt()).toFloat() != dataNightS){
+                if(deliveries2 != 0 || extras2 != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataNightS.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataNightS%1f
+
+                    extras2+=theShare*matchData.extraIncome
+                    deliveries2+=(theShare*matchData.delivers).toInt()
+                }
+            }
+            if ((dataNightE.toInt()).toFloat() != dataNightE){
+                if(deliveries1 != 0 || extras1 != 0f){
+                    //this will be used only on general statistics when the list include all of the hours...
+                    var theIndex = dataNightE.toInt()-1
+                    if(theIndex < 0)
+                        theIndex = 0
+                    if(theIndex > 23)
+                        theIndex-=24
+                    val matchData = dataPerHourDomain[theIndex]
+                    val theShare = dataNightE%1f
+
+                    extras2+=theShare*matchData.extraIncome
+                    deliveries2+=(theShare*matchData.delivers).toInt()
+                }
+            }
+
+        }else {
+            for (i in liveBuilderState.deliversItem) {
+                var theTime = i.time.hour + (i.time.minute / 60f)
+                if (dataStart < i.time.date) {
+                    theTime += 24
+                }
+                if (theTime in dataMorningS..<dataMorningE) {
+                    deliveries += 1
+                    extras += i.extra
+                } else if (theTime in dataNoonS..<dataNoonE) {
+                    deliveries1 += 1
+                    extras1 += i.extra
+                } else if (theTime in dataNightS..<dataNightE) {
+                    deliveries2 += 1
+                    extras2 += i.extra
+                }
             }
         }
         val theDataSum = mutableListOf<ShiftDomain>()
@@ -283,7 +398,7 @@ class GetDeclareShifts {
 
             dataSum.add(
                 ShiftDomain(
-                    workingPlatform = liveBuilderState.workingPlatform,
+                    workingPlatformId = liveBuilderState.workingPlatformId,
                     shiftType = shiftFrame.name,
                     startTime = theStart,
                     endTime = theEnd,

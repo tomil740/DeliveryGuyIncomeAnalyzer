@@ -1,6 +1,8 @@
 package com.example.deliveryguyincomeanalyzer.data
 
 import com.example.deliveryguyincomeanalyzer.data.util.mapers.dataPerHourDataToDomain
+import com.example.deliveryguyincomeanalyzer.data.util.mapers.remoteDataPerHourToDomain
+import com.example.deliveryguyincomeanalyzer.data.util.mapers.remoteSumObjectStatisticsToDomain
 import com.example.deliveryguyincomeanalyzer.data.util.mapers.remoteWorkingPlatformToDomain
 import com.example.deliveryguyincomeanalyzer.data.util.mapers.shiftDataToShiftDomain
 import com.example.deliveryguyincomeanalyzer.data.util.mapers.shiftDomainToShiftData
@@ -11,6 +13,9 @@ import com.example.deliveryguyincomeanalyzer.domain.Repository
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.DataPerHourDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.WorkSumDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteDataPerHourDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteSumObjectStatisticsDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteWorkDeclareDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveDeliveryItem
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.RemoteWorkingPlatformDomain
@@ -25,7 +30,6 @@ import database.WorkDeclare
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -223,39 +227,6 @@ class RepositoryImpl(db: WorkData):Repository {
         )
     }
 
-    private fun getDomainWorkDeclare(workDeclareParam: WorkDeclare): WorkSumDomain {
-        val shifts = dao.getShiftsByWorkDeclareId(workDeclareId = workDeclareParam.workDeclareId)
-            .executeAsList()
-        val workDeclareDataPerHour =
-            dao.getDataPerHourByWorkDeclareId(workDeclareId = workDeclareParam.workDeclareId)
-                .executeAsList()
-
-        val resultShifts = mutableListOf<ShiftDomain>()
-
-        for (i in shifts) {
-            val dataPerHour = dao.getDataPerHourByShiftId(i.shiftId).executeAsList()
-            resultShifts.add(
-                shiftDataToShiftDomain(i, workDeclareParam.workingPlatformId, dataPerHourDataToDomain(dataPerHour))
-            )
-        }
-
-        return WorkSumDomain(
-            startTime = LocalDateTime.parse(workDeclareParam.workDeclareId),
-            endTime = LocalDateTime.parse(workDeclareParam.endDateTime),
-            time = workDeclareParam.time.toFloat(),
-            deliveries = workDeclareParam.deliveries.toInt(),
-            baseIncome = workDeclareParam.baseIncome.toFloat(),
-            extraIncome = workDeclareParam.extraIncome.toFloat(),
-            yearAndMonth = workDeclareParam.month,
-            dayOfMonth = 7,
-            workingPlatform = workDeclareParam.workingPlatformId,
-            workPerHour = dataPerHourDataToDomain(workDeclareDataPerHour),
-            shifts = resultShifts,
-            objectsType = SumObjectsType.WorkSession,
-            subObjects = listOf()
-        )
-    }
-
     override fun getMonthSum(month: String,workingPlatform: String): List<WorkSumDomain> {
         val a =
         if(workingPlatform == "Any"){
@@ -362,6 +333,117 @@ class RepositoryImpl(db: WorkData):Repository {
             return remoteWorkingPlatformToDomain(a)
 
     }
+
+    override fun getRemoteWorkDeclareByPlatformId(platform: String): RemoteWorkDeclareDomain {
+        val a = dao.getRemoteWorkDeclareByWorkingPlatform(platform).executeAsOne()
+        return RemoteWorkDeclareDomain(
+            workingPlatformId = a.workingPlatform,
+            startTime = a.startTime.toFloat(),
+            endTime = a.endTime.toFloat(),
+            theCounter =a.declariesCounter.toInt()
+        )
+    }
+
+    override fun insertRemoteWorkDeclare(remoteWorkDeclareDomain: RemoteWorkDeclareDomain) {
+        dao.insertRemoteWorkDeclare(
+            workingPlatform = remoteWorkDeclareDomain.workingPlatformId,
+            startTime = remoteWorkDeclareDomain.startTime.toDouble(),
+            endTime = remoteWorkDeclareDomain.endTime.toDouble(),
+            declariesCounter = remoteWorkDeclareDomain.theCounter.toLong()
+        )
+    }
+
+    override fun getRemoteDataPerHourById(theId: String): RemoteDataPerHourDomain {
+       val a = dao.getRemoteDataPerHourBySumObjectId(theId).executeAsOne()
+        return remoteDataPerHourToDomain(a)
+    }
+
+    override fun insertRemoteDataPerHour(remoteDataPerHourDomain: RemoteDataPerHourDomain,workingPlatform: String,workingZone:String) {
+        dao.insertRemoteDataPerHour(
+            sumObjectId = "${workingPlatform}-${workingZone}-${remoteDataPerHourDomain.dataPerHourDomain.hour}",
+            extra =  remoteDataPerHourDomain.dataPerHourDomain.extraIncome.toDouble(),
+            base= remoteDataPerHourDomain.dataPerHourDomain.baseIncome.toDouble(),
+            deliveries= remoteDataPerHourDomain.dataPerHourDomain.delivers.toDouble(),
+            hour=remoteDataPerHourDomain.dataPerHourDomain.hour.toString(),
+            workingPlatform= workingPlatform,
+            workingZone=workingZone,
+            counter= remoteDataPerHourDomain.totalObjects.toLong(),
+            remoteWorkingPlatformId= "${workingPlatform}-${workingZone}"
+        )
+    }
+
+    override fun getUserDataLastUpdate(): String {
+        return dao.getUserDataObj().executeAsOne().lastStatisticsToUpdate
+    }
+
+    override fun getAllRemoteWorkingPlatformsId(): List<String> {
+        return dao.getAllRemopteWorkingPlatformById().executeAsList().map { it.workingPlatformId }
+    }
+
+    override fun getMonthSumWorkSessionAmount(monthId:String,workingPlatform: String): Int {
+        val a = try {
+             dao.getByPlatMonthData(workingPlatform = workingPlatform, theMonth = monthId).executeAsList().size
+        }catch (e:Exception){
+            0
+        }
+        return a
+    }
+
+    override fun getRemoteSumObjectStatisticsByWp(workingPlatform: String): RemoteSumObjectStatisticsDomain {
+       return remoteSumObjectStatisticsToDomain(dao.getRemoteSumObjectStatisticByWorkingPlatform(workingPlatform).executeAsOne())
+    }
+
+    override fun insertRemoteSumObjectStatistics(remoteSumObjectStatistics: RemoteSumObjectStatisticsDomain) {
+        dao.insertRemoteSumObjectStatistics(
+            workingPlatformId = remoteSumObjectStatistics.workingPlatformId,
+            monthDeclaries = remoteSumObjectStatistics.monthAmount.toLong(),
+            yearDeclaries = remoteSumObjectStatistics.yearAmount.toLong(),
+            totalYears = remoteSumObjectStatistics.totalYears.toLong(),
+            totalMonths =remoteSumObjectStatistics.totalMonths.toLong()
+        )
+    }
+
+    override fun updateUserData(currentDate:String) {
+        dao.insertUserData("Name",currentDate)
+    }
+
+///repository helper functions
+
+
+    private fun getDomainWorkDeclare(workDeclareParam: WorkDeclare): WorkSumDomain {
+        val shifts = dao.getShiftsByWorkDeclareId(workDeclareId = workDeclareParam.workDeclareId)
+            .executeAsList()
+        val workDeclareDataPerHour =
+            dao.getDataPerHourByWorkDeclareId(workDeclareId = workDeclareParam.workDeclareId)
+                .executeAsList()
+
+        val resultShifts = mutableListOf<ShiftDomain>()
+
+        for (i in shifts) {
+            val dataPerHour = dao.getDataPerHourByShiftId(i.shiftId).executeAsList()
+            resultShifts.add(
+                shiftDataToShiftDomain(i, workDeclareParam.workingPlatformId, dataPerHourDataToDomain(dataPerHour))
+            )
+        }
+
+        return WorkSumDomain(
+            startTime = LocalDateTime.parse(workDeclareParam.workDeclareId),
+            endTime = LocalDateTime.parse(workDeclareParam.endDateTime),
+            time = workDeclareParam.time.toFloat(),
+            deliveries = workDeclareParam.deliveries.toInt(),
+            baseIncome = workDeclareParam.baseIncome.toFloat(),
+            extraIncome = workDeclareParam.extraIncome.toFloat(),
+            yearAndMonth = workDeclareParam.month,
+            dayOfMonth = 7,
+            workingPlatform = workDeclareParam.workingPlatformId,
+            workPerHour = dataPerHourDataToDomain(workDeclareDataPerHour),
+            shifts = resultShifts,
+            objectsType = SumObjectsType.WorkSession,
+            subObjects = listOf()
+        )
+    }
+
+
 }
 
 

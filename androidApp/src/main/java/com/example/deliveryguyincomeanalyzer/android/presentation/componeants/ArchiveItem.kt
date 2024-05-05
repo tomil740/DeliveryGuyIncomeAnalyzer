@@ -39,7 +39,9 @@ import java.math.RoundingMode
 
 @Composable
 fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
-                ,subSizeParam:Float, subValueParam:Float,onHeaderClick : () ->Unit
+                ,subSizeParam:Float, subValueParam:Float,perHourVal : Float,perHourComparable:Float
+                ,perDeliveryVal : Float,perDeliveryComparable:Float,perSessionVal : Float,perSessionComparable:Float,
+                onHeaderClick : () ->Unit
                 ,modifier: Modifier=Modifier) {
 
     var isDefaultBar by remember { mutableStateOf(false) }
@@ -180,7 +182,10 @@ fun ArchiveItem(objectName:String,barSizeParam:Float,barValueParam:Float
             Spacer(modifier = Modifier.height(12.dp))
 
             ExpandedDataItem(isExpandet,barColor = MaterialTheme.colorScheme.onSecondary,
-                valueColor = MaterialTheme.colorScheme.secondary,textColor=MaterialTheme.colorScheme.onSecondaryContainer)
+                valueColor = MaterialTheme.colorScheme.secondary,textColor=MaterialTheme.colorScheme.onSecondaryContainer
+            , perHourValue = perHourVal,perHourComparable=perHourComparable, perDeliveryValue =perDeliveryVal ,
+                perDeliveryComparable =  perDeliveryComparable, perSessionValue = perSessionVal, perSessionComparable = perSessionComparable
+            )
         }
 
         Box(

@@ -1,10 +1,13 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.componeants
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -20,15 +23,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.WorkingPlatformOptionMenuItem
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
 fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu:()->Unit={}, pickedPlatformComparable:String="April 2024, Any",
+                               sumObjectSourceType: SumObjectSourceType,
                                platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(), platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
-                               onItemPick:(String)->Unit, textColor: Color=MaterialTheme.colorScheme.onPrimary) {
-    val firstMenu = listOf<String>("MyStatistics","GeneralStatistics")
+                               onMyStatItemPick:(String)->Unit, onGeneralStatPick:(String)->Unit, textColor: Color=MaterialTheme.colorScheme.onPrimary) {
+    val firstMenu = listOf<String>("My-Statistics","General-Statistics")
 
     var isExpended by remember { mutableStateOf(false) }
 
@@ -36,8 +42,6 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
 
     var theItem =
         " : $pickedPlatformComparable"
-
-
 
     if (isExpended) {
         arrowIcon.value = Icons.Default.KeyboardArrowUp
@@ -59,21 +63,29 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                     color = textColor
                 )
             }
-            Row(modifier = Modifier.clickable { isExpended = !isExpended }) {
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = ":$theItem",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .offset(y = -2.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+                    text = sumObjectSourceType.name ,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = textColor,
                 )
+                Row(modifier = Modifier.clickable { isExpended = !isExpended }) {
+                    Text(
+                        text = theItem,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier
+                            .offset(y = -2.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
 
-                Icon(
-                    imageVector = arrowIcon.value,
-                    contentDescription = null,
-                    modifier = Modifier.offset(y = 10.dp),
-                    tint = textColor
-                )
+                    Icon(
+                        imageVector = arrowIcon.value,
+                        contentDescription = null,
+                        modifier = Modifier.offset(y = 10.dp),
+                        tint = textColor
+                    )
+                }
             }
         }
         CascadeDropdownMenu(
@@ -87,7 +99,7 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                     text = { Text(text = i) },
                     children = {
                         var thePlatformsLst = platformsMenu1
-                        if(i =="MyStatistics")
+                        if(i ==firstMenu[0])
                             thePlatformsLst=platformsMenu1.plus(platformsMenu2)
                         for (t in thePlatformsLst) {
                             DropdownMenuItem(
@@ -98,7 +110,11 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                                             text = { Text(text = j) },
                                             onClick = {
                                                 isExpended = false
-                                                onItemPick("${t.platformName}-$j")
+                                                if(i == firstMenu[0]){
+                                                    onMyStatItemPick("${t.platformName}-$j")
+                                                }else{
+                                                    onGeneralStatPick("${t.platformName}-$j")
+                                                }
                                                 theItem = "${t.platformName}->$j"
                                             }
                                         )
@@ -110,7 +126,11 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                             text = { Text(text = "Any") },
                             onClick = {
                                 isExpended = false
-                                onItemPick("Any")
+                                if(i == firstMenu[0]){
+                                    onMyStatItemPick("Any")
+                                }else{
+                                    onGeneralStatPick("Any")
+                                }
                                  theItem = "Any"
                             }
                         )

@@ -40,6 +40,7 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.scr
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.ObjectItemScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
 import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObjectHeaderItemData
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 
 @Composable
 fun OverViewScreen(modifier:Modifier=Modifier) {
@@ -68,7 +69,9 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 item {
                     MainObjectHeaderItem(onMainObjectClick = { navigator.push(ObjectItemScreenClass()) },
-                        navigator = navigator, navToPlatformBuilder = {}, onPlatformPick = {}, mainObjectHeaderItemData = MainObjectHeaderItemData()
+                        navigator = navigator, navToPlatformBuilder = {}, onPlatformPick = {},
+                        mainObjectHeaderItemData = MainObjectHeaderItemData(
+                            ComparableObjectSourceType =  SumObjectSourceType.Archive)
                     )
 
                     Text(

@@ -2,6 +2,7 @@ package com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models
 
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.GraphState
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getIncomeDataPerHour
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getSumObjectHeader
@@ -20,7 +21,7 @@ data class ShiftDomain(
     val delivers : Int,
     val dataPerHour : List<DataPerHourDomain>
 ){
-    fun toShiftSum(): SumObj {
+    fun toShiftSum(sumObjectSourceType:SumObjectSourceType =SumObjectSourceType.Archive): SumObj {
 
         return SumObj(
            objectName = getSumObjectHeader(objectType = SumObjectsType.ShiftSession,shiftType,startTime),
@@ -42,7 +43,8 @@ data class ShiftDomain(
             subObjName = "Shift",
             subObjects = null,
             shiftsSumByType = null,
-            averageTimeSubObj = 1f
+            averageTimeSubObj = 1f,
+            sumObjectSourceType = sumObjectSourceType
 
         )
     }

@@ -3,6 +3,7 @@ package com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.GraphState
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getIncomeDataPerHour
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getSumObjectHeader
@@ -26,7 +27,7 @@ data class WorkSumDomain(
     val shifts : List<ShiftDomain>,
     val subObjects: List<WorkSumDomain>
 ){
-    fun toWorkSum(): SumObj {
+    fun toWorkSum(sumObjectSourceType: SumObjectSourceType = SumObjectSourceType.Archive): SumObj {
         return SumObj(
             platform = workingPlatform,
             objectName= getSumObjectHeader(objectsType, shiftType = null,startTime),
@@ -48,7 +49,8 @@ data class WorkSumDomain(
             averageTimeSubObj = time/subObjects.size,
             objectType =objectsType,
             shiftType = null,//because workSumSomain dosnt work with shifts...
-            subObjName = "Shift"
+            subObjName = "Shift",
+            sumObjectSourceType = sumObjectSourceType
         )
     }
 /*
@@ -67,7 +69,7 @@ data class WorkSumDomain(
             workPerHour = GraphState(ogLst = getIncomeDataPerHour(workPerHour), listStartTime = startTime.hour, listEndTime = endTime.hour),
             incomePerSpecificHour = GraphState(ogLst = getWorkDataPerHour(workPerHour), listStartTime = startTime.hour, listEndTime = endTime.hour),
             averageIncomeSubObj = 5f,
-            platform = workingPlatform,
+            platform = workingPlatformId,
             objectType = SumObjectsType.ShiftSession,
             totalIncome = baseIncome+extraIncome,
             subObjName = "Shift",

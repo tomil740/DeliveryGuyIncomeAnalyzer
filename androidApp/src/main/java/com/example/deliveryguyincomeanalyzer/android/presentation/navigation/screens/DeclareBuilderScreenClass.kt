@@ -18,29 +18,34 @@ class DeclareBuilderScreenClass: Screen {
         val state by a.state.collectAsState()
         val b = DeclareBuilderStatesAndEvents(
             uiState = state,
-            onAddDeliveryItem = {a.onDeclareBuilderEvent(DeclareBuilderEvents.onAddDeliveryItem(it))},
+            onAddDeliveryItem = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnAddDeliveryItem(it))},
             onDeleteDeclare = {  },
             onDeleteDeliveryItem = {
                 a.onDeclareBuilderEvent(
-                    DeclareBuilderEvents.onDeleteDeliveryItem(
+                    DeclareBuilderEvents.OnDeleteDeliveryItem(
                         it
                     )
                 )
             },
-           // onPlatformPick = { a.onDeclareBuilderEvent(DeclareBuilderEvents.onPlatformPick(it)) },
-            onSubmitDeclare = {a.onDeclareBuilderEvent(DeclareBuilderEvents.onSubmitDeclare) }
+           // OnMainPlatformPick = { a.onDeclareBuilderEvent(DeclareBuilderEvents.OnMainPlatformPick(it)) },
+            onSubmitDeclare = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnSubmitDeclare) }
             , saveLiveBuilderState =   {a.onDeclareBuilderEvent(
-                DeclareBuilderEvents.saveLiveBuilderState(state.liveBuilderState))}
+                DeclareBuilderEvents.SaveLiveBuilderState(state.liveBuilderState))}
             , getLiveBuilderState ={a.onDeclareBuilderEvent(
-                DeclareBuilderEvents.getLiveBuilderState)}
+                DeclareBuilderEvents.GetLiveBuilderState)}
                 ,
             deleteLiveBuilderState = {a.onDeclareBuilderEvent(DeclareBuilderEvents.DeleteLiveBuilderState)},
-            onPickWorkingPlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnWorkingPlatfomPick(it))}
+            onPickWorkingPlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnComparableWorkingPlatformPick(it))},
+            onComparablePlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.GetComparableMenuAllArchive(it))},
+            onArchiveComparableMenuPick = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnArchiveComparableMenuPick(it))},
+            onCloseComparableArchiveMenu = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnCloseComparableMenu)},
+            onComparableStatPick = {a.onDeclareBuilderEvent(DeclareBuilderEvents.GetComparableStatistics(it))},
+            onOpenComparableArchiveMenu = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnOpenComparableMenu)},
         )
         //when picked this item platform, we will navigate to the matched builder
         //in order to not do that on default values we changee it if its
-       // if(b.uiState.liveBuilderState.workingPlatform == "Add +")
-         //   b.onPlatformPick("Wolt")
+       // if(b.uiState.liveBuilderState.workingPlatformId == "Add +")
+         //   b.OnMainPlatformPick("Wolt")
         DeclareLiveBuilderScreen(declareBuilderStatesAndEvents = b, modifier = Modifier)
 
     }

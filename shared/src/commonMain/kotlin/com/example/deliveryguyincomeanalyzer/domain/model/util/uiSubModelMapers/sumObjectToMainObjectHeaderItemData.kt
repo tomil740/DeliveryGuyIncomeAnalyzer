@@ -27,7 +27,8 @@ fun sumObjectToMainObjectHeaderItemData(value: SumObjectInterface, comparable:Su
         subSumAverageIncome = value.averageIncomeSubObj,
         subSumComparableAverageIncome = comparable.averageIncomeSubObj,
         platformsMenu1 = platformOptionMenu1,
-        platformsMenu2 = platformOptionMenu2
+        platformsMenu2 = platformOptionMenu2,
+        ComparableObjectSourceType = comparable.sumObjectSourceType
 
 
 

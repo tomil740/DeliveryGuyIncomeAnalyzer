@@ -8,7 +8,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.theModels.WorkingPlatf
 GetWorkingPlatformById:
 will get the picked working platform id from the picker option menu ,
 then pull from the data base the idale matched platofrm object
-whether a local override or the default values according to the workingPlatform const
+whether a local override or the default values according to the workingPlatformId const
 *if its a default values objects the return value will notice the UI*
  */
 class GetWorkingPlatformById(val repository: Repository) {

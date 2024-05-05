@@ -70,6 +70,11 @@ fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState: G
     var showValueGraph by remember { mutableStateOf(true) }
     var showComparableGraph by remember { mutableStateOf(true) }
 
+    LaunchedEffect(key1 = perHourValueGraphState,perHourComparableGraphState) {
+        graphValueState = perHourValueGraphState
+        graphComparableState =perHourComparableGraphState
+    }
+
 
     //the launched effect is responsable to the flexible feature of our graph , to be size according to the picked graphs that we present on it
     //we will update all of the graphs and the table in every change on any graph to keep all scale as well as poseeable
@@ -134,6 +139,7 @@ fun GraphItem(perHourValueGraphState: GraphState, perHourComparableGraphState: G
 
         //at this box we will position one on top each other all of the graph elements
         Box(modifier = modifier, contentAlignment = Alignment.Center) {
+
 
             //the graph table function , will draw according to the matched sates and update accordingly
             GraphTable(

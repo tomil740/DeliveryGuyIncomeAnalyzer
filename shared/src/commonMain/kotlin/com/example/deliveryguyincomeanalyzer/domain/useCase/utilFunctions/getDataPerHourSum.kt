@@ -10,7 +10,7 @@ data class SumDataPerHour(
     val baseIncome : Float, //(define specific hour if the platform will update that will stay the same …)
     val delivers : Int
 )
-fun getDataPerHourSum (workPerHour:List<DataPerHourDomain>,startTime:Int=0,endTime:Int=24):List<DataPerHourDomain>{
+fun getDataPerHourSum (workPerHour:List<DataPerHourDomain>,startTime:Int=0,endTime:Int=23):List<DataPerHourDomain>{
     val hourList = mutableListOf<SumDataPerHour>()
     for (i in startTime..endTime){
         hourList.add(

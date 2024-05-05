@@ -32,6 +32,12 @@ CREATE TABLE WorkDeclare(
      workingPlatformId TEXT NOT NULL,
      FOREIGN KEY (workingPlatformId) REFERENCES WokingPlatform(workingPlatformId)
 );
+CREATE TABLE RemoteWorkDeclare(
+    workingPlatform TEXT NOT NULL PRIMARY KEY,
+    startTime REAL NOT NULL,
+    endTime REAL NOT NULL,
+    declariesCounter INTEGER NOT NULL
+);
 CREATE TABLE DataPerHour(
      id INTEGER NOT NULL  PRIMARY KEY AUTOINCREMENT,
      workDeclareId TEXT NOT NULL ,
@@ -42,6 +48,18 @@ CREATE TABLE DataPerHour(
      shiftId INTEGER NOT NULL,
      FOREIGN KEY (shiftId) REFERENCES Shift(shiftId),
      FOREIGN KEY (workDeclareId) REFERENCES WorkDeclare(workDeclareId)
+);
+CREATE TABLE RemoteDataPerHour(
+     sumObjectId TEXT NOT NULL UNIQUE PRIMARY KEY,
+     extra REAL NOT NULL,
+     base REAL NOT NULL,
+     deliveries REAL NOT NULL ,
+     hour TEXT NOT NULL ,
+     workingPlatform Text NOT NULL,
+     workingZone Text NOT NULL,
+     counter INTEGER NOT NULL,
+     remoteWorkingPlatformId TEXT NOT NULL,
+     FOREIGN KEY (remoteWorkingPlatformId) REFERENCES RemoteWorkingPlatform(workingPlatformId)
 );
 CREATE TABLE  Shift(
      shiftId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -66,6 +84,34 @@ CREATE TABLE RemoteWorkingPlatform(
     workingZone TEXT ,
     platformName TEXT
 );
+CREATE TABLE RemoteSumObjectStatistics(
+    workingPlatformId TEXT NOT NULL PRIMARY KEY ,
+    monthDeclaries INTEGER NOT NULL,
+    yearDeclaries INTEGER NOT NULL,
+    totalYears INTEGER NOT NULL,
+    totalMonths INTEGER NOT NULL
+);
+CREATE TABLE UserData(
+    userName TEXT NOT NULL PRIMARY KEY,
+    lastStatisticsToUpdate TEXT NOT NULL
+);
+
+insertRemoteSumObjectStatistics:
+    INSERT OR REPLACE
+    INTO RemoteSumObjectStatistics(
+        workingPlatformId,
+        monthDeclaries,
+        yearDeclaries,
+        totalYears,
+        totalMonths
+    )VALUES(?,?,?,?,?);
+
+insertUserData:
+    INSERT OR REPLACE
+    INTO UserData(
+        userName,
+        lastStatisticsToUpdate
+    )VALUES(?,?);
 
 insertRemoteWorkingPlatform:
     INSERT OR REPLACE
@@ -108,6 +154,10 @@ getWorkingPlatformById:
 
 getRemoteWorkingPlatformById:
     SELECT * FROM RemoteWorkingPlatform WHERE workingPlatformId = ?;
+
+getAllRemopteWorkingPlatformById:
+    SELECT * FROM RemoteWorkingPlatform;
+
 
 insertWorkDeclare:
     INSERT OR REPLACE
@@ -216,3 +266,45 @@ insertWorkDeclare:
 
     getByPlatMonthData:
           SELECT * FROM WorkDeclare WHERE (workingPlatformId=:workingPlatform AND month=:theMonth) ORDER BY workDeclareId DESC;
+
+    insertRemoteWorkDeclare:
+    INSERT OR REPLACE
+               INTO RemoteWorkDeclare(
+                    workingPlatform ,
+                    startTime,
+                    endTime,
+                    declariesCounter
+               )
+               VALUES(  ?,  ?,?,?);
+
+
+
+    getRemoteWorkDeclareByWorkingPlatform:
+        SELECT * FROM RemoteWorkDeclare WHERE workingPlatform = ?;
+
+
+    insertRemoteDataPerHour:
+    INSERT OR REPLACE
+               INTO RemoteDataPerHour(
+                     sumObjectId ,
+                     extra ,
+                     base,
+                     deliveries,
+                     hour ,
+                     workingPlatform,
+                     workingZone,
+                     counter,
+                     remoteWorkingPlatformId
+               )
+               VALUES(  ?,  ?,?,?,?,?,?,?,?);
+
+
+
+    getRemoteDataPerHourBySumObjectId:
+        SELECT * FROM RemoteDataPerHour WHERE sumObjectId = ?;
+
+    getRemoteSumObjectStatisticByWorkingPlatform:
+        SELECT * FROM RemoteSumObjectStatistics WHERE workingPlatformId = ?;
+
+    getUserDataObj:
+        SELECT * FROM UserData;

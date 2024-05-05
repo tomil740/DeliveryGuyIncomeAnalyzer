@@ -1,7 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,9 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
@@ -40,8 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -50,7 +45,6 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.Ar
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.BooleanItemsSwitch
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.GraphItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
-import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.PlatformArbitrator
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.ObjectItemScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.screens.util.ArchiveMenu
@@ -67,7 +61,7 @@ import kotlinx.coroutines.flow.consumeAsFlow
 fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                      objectItemStatesAndEvents: ObjectItemStatesAndEvents, modifier: Modifier = Modifier) {
 
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val navigator = LocalNavigator.currentOrThrow
 
     var shouldInit by remember { mutableStateOf(true)}
@@ -102,7 +96,7 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                 }
             },
             snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState)
+                SnackbarHost(hostState = snackBarHostState)
             }
             ) { paddingVal ->
 
@@ -115,7 +109,7 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
 
                 LaunchedEffect(objectItemStatesAndEvents.uiState.uiMessage) {
                     objectItemStatesAndEvents.uiState.uiMessage.consumeAsFlow().collect{
-                        snackbarHostState.showSnackbar(it, duration = SnackbarDuration.Long)
+                        snackBarHostState.showSnackbar(it, duration = SnackbarDuration.Long)
                     }
                 }
 
@@ -136,7 +130,7 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                         objectItemStatesAndEvents.onValueWorkingPlatform(it)
                     },
                     navToPlatformBuilder = {},
-                    onComparablePick = {objectItemStatesAndEvents.onComparablePlatform(it)},
+                    onGeneralStatPick = {objectItemStatesAndEvents.onGeneralStatisticsPick(it)},
                     onMyStatPick = {objectItemStatesAndEvents.onMyStatPick(it)},
                     modifier = modifier
                 )
@@ -275,6 +269,8 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                             ) {
                                 if (objectItemStatesAndEvents.uiState.objectValueSum.subObjects != null) {
                                     items(objectItemStatesAndEvents.uiState.objectValueSum.subObjects!!) { theObj ->
+                                        val comparable = objectItemStatesAndEvents.uiState.objectComparableSum.subObjects?.get(0) ?:
+                                        objectItemStatesAndEvents.uiState.objectComparableSum
                                         if (theObj.objectType == SumObjectsType.ShiftSession) {
 
                                             Spacer(modifier = Modifier.height(24.dp))
@@ -292,6 +288,12 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                                                 barValueParam = theObj.totalIncome,
                                                 subSizeParam = theObj.totalTime * 1.3f,
                                                 subValueParam = theObj.totalTime,
+                                                perHourVal = theObj.averageIncomePerHour,
+                                                perHourComparable = comparable.averageIncomePerHour,
+                                                perDeliveryVal = theObj.averageIncomePerDelivery,
+                                                perDeliveryComparable = comparable.averageIncomePerDelivery,
+                                                perSessionVal = theObj.averageIncomeSubObj,
+                                                perSessionComparable = comparable.averageIncomeSubObj,
                                                 onHeaderClick = {
                                                     navigator.push(
                                                         ObjectItemScreenClass(
@@ -374,13 +376,10 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                 workingPlatformCustomMenu = objectItemStatesAndEvents.uiState.workingPlatformCustomMenu,
                 onObjectPick = {objectItemStatesAndEvents.onArchiveComparableMenuPick(it)},
                 onWorkingPlatformPick = {objectItemStatesAndEvents.onComparablePlatform(it)},
+                comparableObj = objectItemStatesAndEvents.uiState.objectComparableSum,
                 modifier = modifier
             )
-
-
         }
-
-
     }
 
 

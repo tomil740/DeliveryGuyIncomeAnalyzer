@@ -1,5 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.domain.model.theModels
 
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import kotlinx.datetime.LocalDateTime
 
@@ -7,6 +8,7 @@ interface SumObjectInterface {
     val shiftType:String?
     var platform: String
     val objectType : SumObjectsType
+    val sumObjectSourceType : SumObjectSourceType
     val objectName: String
     val startTime: LocalDateTime
     val endTime: LocalDateTime
@@ -24,12 +26,14 @@ interface SumObjectInterface {
     val averageTimeSubObj:Float
     val subObjects:List<SumObjectInterface>?
     val shiftsSumByType : List<ShiftsSumByType>?
+    val workSessionAmount:Int
 }
 
 data class SumObj(
     override val shiftType:String?=null,
     override var platform: String,
     override val objectType : SumObjectsType,
+    override val sumObjectSourceType: SumObjectSourceType,
     override val objectName: String,
     override val startTime: LocalDateTime,
     override val endTime: LocalDateTime,
@@ -47,6 +51,7 @@ data class SumObj(
     override val averageTimeSubObj:Float,
     override val subObjects:List<SumObjectInterface>?=null,
     override val shiftsSumByType : List<ShiftsSumByType>?=null,
+    override val workSessionAmount: Int = 1
 ):SumObjectInterface
 
 

@@ -12,7 +12,7 @@ import kotlinx.datetime.Month
 
 class SumDomainData() {
 
-    fun getSummarizesDomainObject(a: List<WorkSumDomain>,objectType:SumObjectsType = SumObjectsType.MonthSum,workingPlat:String = ""): WorkSumDomain {
+    fun getSummarizesDomainObject(a: List<WorkSumDomain>,objectType:SumObjectsType = SumObjectsType.MonthSum,workingPlat:String = "Any"): WorkSumDomain {
         var time: Float = 0f
         var deliveries: Int = 0
         var baseIncome: Float = 0f
@@ -69,7 +69,7 @@ class SumDomainData() {
                     year = currentTime.year,
                     month = currentTime.month,
                     dayOfMonth = 28
-                ), time = LocalTime(23, 0)
+                ), time = LocalTime(0, 0)
             ),
             time = time,
             deliveries = deliveries,

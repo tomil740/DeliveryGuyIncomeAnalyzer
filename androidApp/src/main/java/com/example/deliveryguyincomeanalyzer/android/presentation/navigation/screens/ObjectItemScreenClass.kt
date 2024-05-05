@@ -24,7 +24,8 @@ class ObjectItemScreenClass(private val initializeObj: SumObjectInterface? = nul
             onArchiveComparableMenuPick = {a.onEvent(ObjectItemEvents.OnArchiveComparableMenuPick(it))},
             onValueWorkingPlatform = {a.onEvent(ObjectItemEvents.GetValueAllArchive(it))},
             onComparablePlatform = {a.onEvent(ObjectItemEvents.GetComparableMenuAllArchive(it))},
-            onMyStatPick = {a.onEvent(ObjectItemEvents.GetComparableStatistics(it))}
+            onMyStatPick = {a.onEvent(ObjectItemEvents.GetLocalComparableStatistics(it))},
+            onGeneralStatisticsPick = {a.onEvent(ObjectItemEvents.GetGeneralStatisticsComparable(it))}
         )
         ObjectItemScreen(initializeObj = initializeObj,b,modifier = Modifier)
     }

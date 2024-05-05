@@ -3,6 +3,9 @@ package com.example.deliveryguyincomeanalyzer.domain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.DataPerHourDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.WorkSumDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteDataPerHourDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteSumObjectStatisticsDomain
+import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteWorkDeclareDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.RemoteWorkingPlatformDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
@@ -34,10 +37,19 @@ interface Repository {
 
     fun getAllShiftsByType(platform: String,theType:Int):List<WorkSumDomain>
     fun getRemoteWorkingPlatformMenu():Flow<List<WorkingPlatformOptionMenuItem>>
-
+    fun getAllRemoteWorkingPlatformsId():List<String>
     fun getCustomWorkingPlatformMenu(): Flow<List<WorkingPlatformOptionMenuItem>>
     fun getWorkingPlatformById(platformId:String):WorkingPlatform?
     fun getRemoteWorkingPlatformById(platformId:String):WorkingPlatform
+    fun getRemoteWorkDeclareByPlatformId(platform: String): RemoteWorkDeclareDomain
+    fun insertRemoteWorkDeclare(remoteWorkDeclareDomain: RemoteWorkDeclareDomain)
+    fun getRemoteDataPerHourById(theId:String): RemoteDataPerHourDomain
+    fun insertRemoteDataPerHour(remoteDataPerHourDomain: RemoteDataPerHourDomain,workingPlatform: String,workingZone:String)
+    fun getUserDataLastUpdate():String
+    fun getMonthSumWorkSessionAmount(monthId:String,workingPlatform:String):Int
+    fun getRemoteSumObjectStatisticsByWp(workingPlatform:String): RemoteSumObjectStatisticsDomain
+    fun insertRemoteSumObjectStatistics(remoteSumObjectStatistics:RemoteSumObjectStatisticsDomain)
+    fun updateUserData(currentDate:String)
 
 
     /*

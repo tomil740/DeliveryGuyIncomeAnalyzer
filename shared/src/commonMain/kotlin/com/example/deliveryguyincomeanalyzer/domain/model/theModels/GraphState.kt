@@ -36,13 +36,19 @@ data class GraphState(
     }
     fun getStartOptionsLst():List<Int>{
         var optionLst:MutableList<Int> = mutableListOf()
+        if(listEndTime == 0){
+            listEndTime = 24
+            endTime=listEndTime
+        }
+
         if(listEndTime < listStartTime) {
             listEndTime += 24
             endTime=listEndTime
         }
 
+
+
         for (i in 0..50){
-            println("the end Time $endTime")
             if(i>=listStartTime && i<=endTime&&i<endTime) {
                 optionLst.add(
                     i
@@ -53,6 +59,12 @@ data class GraphState(
     }
     fun getEndOptionsLst():List<Int>{
         var optionLst:MutableList<Int> = mutableListOf()
+        if(listEndTime == 0){
+            listEndTime = 24
+            endTime=listEndTime
+        }
+
+
         if(listEndTime < listStartTime)
             listEndTime+=24
         for (i in 0..50){
