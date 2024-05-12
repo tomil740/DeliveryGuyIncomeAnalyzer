@@ -8,7 +8,6 @@ import kotlinx.coroutines.channels.Channel
 
 data class DeclareBuilderUiState(
     val liveBuilderState: LiveBuilderState,
-    val workingPlatform : WorkingPlatform,
     val totalIncome : Float,
     val currentSum: SumObjectInterface,
     val comparableObj : SumObjectInterface,

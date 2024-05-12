@@ -45,7 +45,7 @@ fun PlatformBuilderScreen() {
             navToPlatformBuilder = {},
             navToPlatformContext = "Platform Builder",
             navigator = navigator,
-            onPlatformPick = {},
+            onValueArchivePick = {},
             onMainObjectClick = {},
 
         )

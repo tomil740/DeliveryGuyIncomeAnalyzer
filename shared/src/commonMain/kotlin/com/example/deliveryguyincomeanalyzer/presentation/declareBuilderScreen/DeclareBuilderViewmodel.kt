@@ -1,56 +1,43 @@
 package com.example.deliveryguyincomeanalyzer.presentation.declareBuilderScreen
 
-import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteWorkDeclareDomain
-import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveBuilderState
 import com.example.deliveryguyincomeanalyzer.domain.model.builderScreenModels.LiveDeliveryItem
-import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.WorkingPlatform
-import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getTimeDifferent
 import com.example.deliveryguyincomeanalyzer.domain.useCase.DeclareBuilderUseCases
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getAllTimeSumObj
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getDeliversData
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import com.example.deliveryguyincomeanalyzer.presentation.objectItemScreen.util.DefaultData
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilderUseCases): ViewModel() {
     /*
     comparedObj :
     an component of the uiState object , will be an workSession sum (at this screen) , we will get the average of them from our db archive ...
      */
-    private val comparedObj: SumObjectInterface = SumObj(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30), endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30),
-        totalTime = getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time),
-        platform = "Wolt", baseIncome = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f)
-        , extraIncome = 300f, totalIncome = getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f
-        , delivers = 35, averageIncomePerDelivery = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f)/35f,
-        averageIncomePerHour = (getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time)*35f+300f)/
-                getTimeDifferent(startTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 5,17,30).time, endTime =  LocalDateTime(year = 2024, month = Month.APRIL, dayOfMonth = 6,3,30).time),
-        objectType = SumObjectsType.WorkSession, shiftType = null, averageIncomeSubObj = 5f, objectName = "w", subObjName = "", averageTimeSubObj = 5f,sumObjectSourceType = SumObjectSourceType.Archive
-    )
-
-    private val workingPlatform =MutableStateFlow<WorkingPlatform>(WorkingPlatform("default", listOf(),44f)
-    )
+    private val comparedObj: SumObjectInterface = DefaultData().comparedObj.value
 
     private val uiMessage = Channel<String>()
 
@@ -62,7 +49,7 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
     private var deliversItems = MutableStateFlow<List<LiveDeliveryItem>>(listOf())
 
     /*
-   liveBuilderState :
+   typeBuilderState :
    an component of the uiState object represent in general teh list of deliversItem above plus some extra data
    this will be update according the list above
     */
@@ -76,7 +63,6 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
         (liveBuilderState=liveBuilderState.value,
         totalIncome = (liveBuilderState.value.totalTime*liveBuilderState.value.baseWage)+liveBuilderState.value.extras,
         currentSum = liveBuilderState.value.toWorkSessionSum(),
-        workingPlatform = workingPlatform.value,
         comparableObj = comparedObj,//just an fake workSesionSum , should be the average one
         workingPlatformRemoteMenu = listOf(),
         workingPlatformCustomMenu = listOf(),
@@ -104,20 +90,6 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
         }
 
             CoroutineScope(Dispatchers.IO).launch {
-
-                launch {
-                    workingPlatform.collect{
-                        if(it.isDefault){
-                            //TODO()need to load a snack bar
-                            withContext(Dispatchers.Main) {
-                            }
-                        }
-                    }
-                }
-
-                //val a = declareBuilderUseCases.getLastWorkSessionSum.invoke().toWorkSessionSum()
-               // _uiState.update { it.copy(currentSum = a) }
-
                 while (true) {
                     liveBuilderState.update {
                         it.copy(
@@ -130,21 +102,20 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
     }
 
     val state : StateFlow<DeclareBuilderUiState> =
-        combine(deliversItems,liveBuilderState, _uiState,workingPlatform) {
-                deliversLst,liveBuilderState, state,workPlat ->
+        combine(deliversItems,liveBuilderState, _uiState) {
+                deliversLst,liveBuilderState, state ->
             //calculate the list sumarise data
             val a = getDeliversData(deliversLst)
             //update the builder state accordingly with the data of it as well
             val b =LiveBuilderState(startTime = liveBuilderState.startTime, endTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                 totalTime =  getTimeDifferent(startTime = liveBuilderState.startTime.time, endTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time),
-                workingPlatform = workPlat.name, baseWage = workPlat.baseWage, extras =a.extras, delivers = a.delivers, deliversItem =a.deliversItem)
+                workingPlatform = liveBuilderState.workingPlatform, baseWage = liveBuilderState.baseWage, extras =a.extras, delivers = a.delivers, deliversItem =a.deliversItem)
             val c = b.toWorkSessionSum()
             DeclareBuilderUiState(
                 liveBuilderState=b,
                 currentSum = c,
                 totalIncome = c.totalIncome,
                 comparableObj = state.comparableObj,
-                workingPlatform = workPlat,
                 workingPlatformCustomMenu = state.workingPlatformCustomMenu,
                 workingPlatformRemoteMenu = state.workingPlatformRemoteMenu,
                 comparableMenuData = state.comparableObj,
@@ -188,8 +159,8 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
 
 
             DeclareBuilderEvents.OnSubmitDeclare ->{
-                val a = LocalDate(2024,Month.MARCH,22)
-                val b = LocalDate(2024,Month.MARCH,23)
+                val a = LocalDate(2024,Month.APRIL,15)
+                val b = LocalDate(2024,Month.APRIL,16)
                 val theLst= listOf(LiveDeliveryItem(time = LocalDateTime(date = a,time=LocalTime(14,45)), extra = 2f),
                     LiveDeliveryItem(time = LocalDateTime(date = a,time=LocalTime(15,15)), extra = 29f),
                     LiveDeliveryItem(time = LocalDateTime(date = a,time=LocalTime(15,45)), extra = 21f),
@@ -228,7 +199,7 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
                 viewModelScope.launch {
                     //we will get all of the working platform data
                     //get working platform data
-                    val dataPerHour = declareBuilderUseCases.getDeclareDataPerHour(fakeLiveBuilderState,shifts.baseWage)
+                    val dataPerHour = declareBuilderUseCases.getLiveDeclareDataPerHour(fakeLiveBuilderState,shifts.baseWage)
 
                     val currentRemoteDataPerHour = declareBuilderUseCases.getRemoteDataPerHour.invoke(size = dataPerHour.size, startH = dataPerHour.first().hour, workingPlatformId = fakeWorkingPlatform)
 
@@ -260,8 +231,16 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
                 }
             }
             is DeclareBuilderEvents.OnMainPlatformPick -> {
-                liveBuilderState.update { it.copy(workingPlatform = event.platform) }
-            }
+                viewModelScope.launch {
+                    val newWp = declareBuilderUseCases.getWorkingPlatformById(event.platform)
+                    liveBuilderState.update {
+                        it.copy(
+                            baseWage = newWp.baseWage,
+                            totalBase = newWp.baseWage*it.totalTime,
+                            workingPlatform = newWp.name
+                        )
+                    }
+                } }
 
             DeclareBuilderEvents.GetLiveBuilderState -> {
                 viewModelScope.launch {
@@ -283,7 +262,7 @@ class DeclareBuilderViewmodel(private val declareBuilderUseCases: DeclareBuilder
             DeclareBuilderEvents.DeleteLiveBuilderState -> {declareBuilderUseCases.deleteLiveBuilderState()}
 
             is DeclareBuilderEvents.OnComparableWorkingPlatformPick -> {
-               workingPlatform.update { declareBuilderUseCases.getWorkingPlatformById(event.workingPlatId)}
+             //  workingPlatform.update { declareBuilderUseCases.getWorkingPlatformById(event.workingPlatId)}
 
             }
 

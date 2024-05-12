@@ -12,7 +12,7 @@ data class SumDataPerHour(
 )
 fun getDataPerHourSum (workPerHour:List<DataPerHourDomain>,startTime:Int=0,endTime:Int=23):List<DataPerHourDomain>{
     val hourList = mutableListOf<SumDataPerHour>()
-    for (i in startTime..endTime){
+    for (i in 0..23){
         hourList.add(
             SumDataPerHour(
                 hour = i,
@@ -127,15 +127,25 @@ fun getDataPerHourSum (workPerHour:List<DataPerHourDomain>,startTime:Int=0,endTi
 
     val resultList = mutableListOf<DataPerHourDomain>()
     for (i in hourList){
-        resultList.add(
-            try {
-            DataPerHourDomain(
-                hour = i.hour,
-                extraIncome = i.extraIncome/i.amount,
-                baseIncome = i.baseIncome/i.amount,
-                delivers = i.delivers/i.amount
-            )}catch (e:Exception){DataPerHourDomain(hour = i.hour, extraIncome = i.extraIncome, baseIncome = i.baseIncome, delivers = i.delivers)}
-        )
+        if (i.hour in startTime..endTime) {
+            resultList.add(
+                try {
+                    DataPerHourDomain(
+                        hour = i.hour,
+                        extraIncome = i.extraIncome / i.amount,
+                        baseIncome = i.baseIncome / i.amount,
+                        delivers = i.delivers / i.amount
+                    )
+                } catch (e: Exception) {
+                    DataPerHourDomain(
+                        hour = i.hour,
+                        extraIncome = i.extraIncome,
+                        baseIncome = i.baseIncome,
+                        delivers = i.delivers
+                    )
+                }
+            )
+        }
     }
 
     return resultList

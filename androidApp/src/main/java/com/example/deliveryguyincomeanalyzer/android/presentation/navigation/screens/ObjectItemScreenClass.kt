@@ -18,14 +18,16 @@ class ObjectItemScreenClass(private val initializeObj: SumObjectInterface? = nul
     override fun Content() {
         val a = getViewModel<ObjectItemViewmodel>()
         val state by a.uiState.collectAsState()
-        val b = ObjectItemStatesAndEvents(uiState = state, getMonthSum = {},
+        val b = ObjectItemStatesAndEvents(uiState = state,
             initializeAnObject = { a.onEvent(ObjectItemEvents.InitializeAnObject(it)) },
             onCloseMenu = {a.onEvent(ObjectItemEvents.OnCloseComparableMenu)}, onOpenMenu = {a.onEvent(ObjectItemEvents.OnOpenComparableMenu)},
             onArchiveComparableMenuPick = {a.onEvent(ObjectItemEvents.OnArchiveComparableMenuPick(it))},
-            onValueWorkingPlatform = {a.onEvent(ObjectItemEvents.GetValueAllArchive(it))},
+            onValueArchiveTopMenu = {a.onEvent(ObjectItemEvents.GetValueAllArchive(it))},
             onComparablePlatform = {a.onEvent(ObjectItemEvents.GetComparableMenuAllArchive(it))},
-            onMyStatPick = {a.onEvent(ObjectItemEvents.GetLocalComparableStatistics(it))},
-            onGeneralStatisticsPick = {a.onEvent(ObjectItemEvents.GetGeneralStatisticsComparable(it))}
+            onComparableUserStatPick = {a.onEvent(ObjectItemEvents.GetComparableUserStatistics(it))},
+            onComparableGeneralStatisticsPick = {a.onEvent(ObjectItemEvents.GetComparableGeneralStatistics(it))},
+            onValueGeneralStatisticsPick = {a.onEvent(ObjectItemEvents.GetValueGeneralStatistics(it))},
+            onValueUserStatPick ={a.onEvent(ObjectItemEvents.GetValueLocalStatistics(it))},
         )
         ObjectItemScreen(initializeObj = initializeObj,b,modifier = Modifier)
     }

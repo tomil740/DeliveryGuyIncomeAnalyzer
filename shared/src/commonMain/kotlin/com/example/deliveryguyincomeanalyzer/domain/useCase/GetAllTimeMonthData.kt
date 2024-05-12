@@ -28,8 +28,9 @@ import kotlinx.datetime.toLocalDateTime
 class GetAllTimeMonthData(val repository: Repository) {
 
     operator fun invoke(workingPlatform: String): List<MonthSumData> {
-       //insertRemoteWorkingPlatforms()
-        //overRideData()
+       // insertRemoteWorkingPlatforms()
+       // overRideData()
+
         val startMont = repository.getFirstWorkDeclareDate()
         var startTime = LocalDate(
             year = startMont.substring(0, 4).toInt(),
@@ -61,12 +62,9 @@ class GetAllTimeMonthData(val repository: Repository) {
 
         return theResultObjects
 
-    }
+
+ }
     fun overRideData(){
-        val a = LocalDate(2024, Month.FEBRUARY, 22)
-        repository.updateUserData("${a.year}${a.month.number}")
-
-
         val theList = listOf("Wolt-Center","Wolt-North","Dominos-North","Dominos-Center","Dominos-South")
         for (i in theList) {
             repository.insertRemoteSumObjectStatistics(
@@ -84,7 +82,7 @@ class GetAllTimeMonthData(val repository: Repository) {
     }
 
     fun insertRemoteWorkingPlatforms() {
-/*
+
         repository.insertRemoteWorkingPlatforms(
             listOf(
                 RemoteWorkingPlatformDomain("X", "Wolt"),
@@ -156,7 +154,7 @@ class GetAllTimeMonthData(val repository: Repository) {
             workingPlatform =
             WorkingPlatform("Dominos-South", a, 60f)
         )
-*/
+
 
 
         //initialize the remote tables

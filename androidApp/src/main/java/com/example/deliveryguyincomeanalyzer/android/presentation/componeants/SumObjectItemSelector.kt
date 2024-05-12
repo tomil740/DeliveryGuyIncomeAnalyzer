@@ -1,7 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.componeants
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,25 +22,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.WorkingPlatformOptionMenuItem
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import me.saket.cascade.CascadeDropdownMenu
 
 @Composable
-fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu:()->Unit={}, pickedPlatformComparable:String="April 2024, Any",
-                               sumObjectSourceType: SumObjectSourceType,
-                               platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(), platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
-                               onMyStatItemPick:(String)->Unit, onGeneralStatPick:(String)->Unit, textColor: Color=MaterialTheme.colorScheme.onPrimary) {
+fun SumObjectItemSelector(isValue:Boolean = true, onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu:()->Unit={},
+                          sumObjName:String="April 2024, Any", sumObjectSourceType: SumObjectSourceType,sumObjectWorkingPlatform:String,
+                          platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(), platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
+                          onUserStatItemPick:(String)->Unit, onGeneralStatPick:(String)->Unit, onArchivePick:(String)->Unit,
+                          textColor: Color=MaterialTheme.colorScheme.onPrimary) {
     val firstMenu = listOf<String>("My-Statistics","General-Statistics")
 
     var isExpended by remember { mutableStateOf(false) }
 
     val arrowIcon = remember { mutableStateOf(Icons.Default.ArrowDropDown) }
 
-    var theItem =
-        " : $pickedPlatformComparable"
+    var theItem = "$sumObjectSourceType,$sumObjectWorkingPlatform"
 
     if (isExpended) {
         arrowIcon.value = Icons.Default.KeyboardArrowUp
@@ -49,31 +47,62 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
         arrowIcon.value = Icons.Default.ArrowDropDown
     }
 
-    Box {
+    var theAlignment =  Alignment.CenterHorizontally
+    var fontSize = MaterialTheme.typography.titleSmall
+
+    if(isValue){
+        theAlignment = Alignment.Start
+        fontSize = MaterialTheme.typography.titleLarge
+    }
+
+    Box() {
         Row {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Compared",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = textColor
-                )
-                Text(
-                    text = "Object",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = textColor
-                )
+            if(!isValue) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "Compared",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = textColor
+                    )
+                    Text(
+                        text = "Object",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = textColor
+                    )
+                }
+            }else {
+                //if its value archive
+                theItem = if (sumObjectSourceType == SumObjectSourceType.Archive) {
+                    "$sumObjName,$sumObjectWorkingPlatform"
+                }
+                //value but aint an archive typed
+                else{
+                    "${sumObjectSourceType.name},$sumObjectWorkingPlatform"
+                }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = theAlignment) {
+                //|||||||||||||||||This is the top text ,apply only when we work with the comparable ...
+                //check if its not an value but archive
+                var theTopHeader =  sumObjectSourceType.name
+                if (sumObjectSourceType == SumObjectSourceType.Archive)
+                    theTopHeader=sumObjName
+                if(!isValue){
                 Text(
-                    text = sumObjectSourceType.name ,
-                    style = MaterialTheme.typography.titleSmall,
+                    text = theTopHeader ,
+                    style = fontSize,
                     color = textColor,
                 )
+                }
+                //|||||||||||||||||This is apply only when we work with the comparable ...
+
                 Row(modifier = Modifier.clickable { isExpended = !isExpended }) {
+                    var theText = theItem
+                     if(!isValue)
+                        theText = sumObjectWorkingPlatform
                     Text(
-                        text = theItem,
-                        style = MaterialTheme.typography.titleMedium,
+                        text = theText,
+                        style = fontSize,
                         modifier = Modifier
                             .offset(y = -2.dp),
                         color = MaterialTheme.colorScheme.onPrimary
@@ -111,7 +140,7 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                                             onClick = {
                                                 isExpended = false
                                                 if(i == firstMenu[0]){
-                                                    onMyStatItemPick("${t.platformName}-$j")
+                                                    onUserStatItemPick("${t.platformName}-$j")
                                                 }else{
                                                     onGeneralStatPick("${t.platformName}-$j")
                                                 }
@@ -127,7 +156,7 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                             onClick = {
                                 isExpended = false
                                 if(i == firstMenu[0]){
-                                    onMyStatItemPick("Any")
+                                    onUserStatItemPick("Any")
                                 }else{
                                     onGeneralStatPick("Any")
                                 }
@@ -137,11 +166,37 @@ fun ComparedStatisticsSelector(onCloseArchiveMenu:()->Unit={}, onOpenArchiveMenu
                     }
                 )
             }
-            DropdownMenuItem(text = { Text(text = "Archive") }
-                , onClick = {
+            if(isValue) {
+                DropdownMenuItem(
+                    text = {Text(text = "Archive")},
+                    children = {
+                        val thePlatformsLst=platformsMenu1.plus(platformsMenu2)
+                        for (i in thePlatformsLst) {
+                            DropdownMenuItem(text = { Text(text = i.platformName)}, children = {
+                                for (j in i.workingZones) {
+                                    DropdownMenuItem(text = { Text(text = j)}, onClick ={
+                                        isExpended = false
+                                        onArchivePick("${i.platformName}-$j")
+                                    })
+                                }
+                            })
+                        }
+                        DropdownMenuItem(
+                            text = { Text(text = "Any") },
+                            onClick = {
+                                isExpended = false
+                                onArchivePick("Any")
+                                theItem = "Any"
+                            }
+                        )
+                    }
+                )
+            }else {
+                DropdownMenuItem(text = { Text(text = "Archive") }, onClick = {
                     isExpended = false
                     onOpenArchiveMenu()
                 })
+            }
         }
     }
 }

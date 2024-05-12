@@ -1,7 +1,10 @@
 package com.example.deliveryguyincomeanalyzer.domain.model.theModels
 
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.ShiftTypes
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
+
 data class ShiftsSumByType(
-    val type:String = "Night",
+    val type:ShiftTypes = ShiftTypes.Morning,
     val totalShifts : Int,
     val shiftSum:SumObj,
     val shiftSums : List<SumObj>

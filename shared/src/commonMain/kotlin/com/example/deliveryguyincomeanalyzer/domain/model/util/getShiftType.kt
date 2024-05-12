@@ -1,5 +1,6 @@
 package com.example.deliveryguyincomeanalyzer.domain.model.util
 
+/*
 fun getShiftType(dataShiftType:Int):String{
     return  when(dataShiftType){
         0->{"Morning"}
@@ -17,3 +18,6 @@ fun getShiftType(dataShiftType:String):Int{
         else -> {2}
     }
 }
+
+
+ */

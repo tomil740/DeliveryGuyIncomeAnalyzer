@@ -1,13 +1,10 @@
 package com.example.deliveryguyincomeanalyzer.domain.useCase
 
-import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.generalStatisticsModels.RemoteDataPerHourDomain
-import com.example.deliveryguyincomeanalyzer.domain.model.theModels.WorkingPlatform
-
 data class DeclareBuilderUseCases(
     val insertLiveDeliveryState: InsertLiveDeliveryState,
     val getLiveDeliveryState: GetLiveBuilderState,
     val deleteLiveBuilderState:DeleteLiveBuilderState,
-    val getDeclareDataPerHour: GetDeclareDataPerHour,
+    val getLiveDeclareDataPerHour: GetLiveDeclareDataPerHour,
     val getDeclareShifts: GetDeclareShifts,
     val insertWorkDeclare: InsertWorkDeclare,
     val insertDataPerHour: InsertDataPerHour,

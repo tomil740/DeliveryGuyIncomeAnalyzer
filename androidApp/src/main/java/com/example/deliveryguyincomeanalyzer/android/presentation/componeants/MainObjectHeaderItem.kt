@@ -31,10 +31,13 @@ import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObject
 fun MainObjectHeaderItem(
     mainObjectHeaderItemData: MainObjectHeaderItemData,
     isBuilderWorkSession:Boolean = false,
-    onPlatformPick:(String)->Unit,
+    onValueArchivePick:(String)->Unit,
+    onValueWorkingPlatform:(String)->Unit={},
+    onComparableGeneralStatPick:(String)->Unit={},
+    onComparableUserStatPick:(String)->Unit={},
+    onValueGeneralStatPick:(String)->Unit={},
+    onValueUserStatPick:(String)->Unit={},
     onMainObjectClick:(String)->Unit,
-    onGeneralStatPick:(String)->Unit={},
-    onMyStatPick:(String)->Unit={},
     isBuilder:Boolean = false,
     isPlatform:Boolean=false,
     value1Color : Color = Color.Blue,
@@ -67,24 +70,44 @@ fun MainObjectHeaderItem(
                 .background(MaterialTheme.colorScheme.primary)
         ) {
             Row {
-                Text(
-                    text =  mainObjectHeaderItemData.objectName,
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier =
-                    Modifier.clickable { onMainObjectClick(mainObjectHeaderItemData.objectName) }//need to set some navigation function ore somthing  }
-                        // .align(alignment = Alignment.CenterHorizontally)
-                        .padding(start = 12.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-                PlatformArbitrator(
-                    isBuilderWorkSession=isBuilderWorkSession,
-                    showHeader = false,
-                    navToBuild = navToPlatformBuilder,
-                    context = navToPlatformContext,
-                    pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
-                    onPlatformPick = { onPlatformPick(it) },
-                    theLst = mainObjectHeaderItemData.platformsMenu1.plus(mainObjectHeaderItemData.platformsMenu2)
-                )
+                if(!isBuilder) {
+                    SumObjectItemSelector(isValue = true,
+                        onOpenArchiveMenu = { mainObjectHeaderItemData.showArchiveMenu() },
+                        sumObjectSourceType = mainObjectHeaderItemData.valueObjectSourceType,
+                        sumObjectWorkingPlatform = mainObjectHeaderItemData.objectPlatform,
+                        sumObjName = mainObjectHeaderItemData.objectName,
+                        onCloseArchiveMenu = { mainObjectHeaderItemData.hideArchiveMenu() },
+                        platformsMenu1 = mainObjectHeaderItemData.platformsMenu1,
+                        platformsMenu2 = mainObjectHeaderItemData.platformsMenu2,
+                        onUserStatItemPick = { onValueUserStatPick(it) },
+                        onGeneralStatPick = { onValueGeneralStatPick(it) },
+                        //will be for builder value wp pick ...
+                        onArchivePick = { onValueArchivePick(it) })
+                }else {
+                    //The old only archive items value picker ...
+
+                    Text(
+                        text = mainObjectHeaderItemData.objectName,
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier =
+                        Modifier.clickable { onMainObjectClick(mainObjectHeaderItemData.objectName) }//need to set some navigation function ore somthing  }
+                            // .align(alignment = Alignment.CenterHorizontally)
+                            .padding(start = 12.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    PlatformArbitrator(
+                        isBuilderWorkSession = isBuilderWorkSession,
+                        showHeader = false,
+                        navToBuild = navToPlatformBuilder,
+                        context = navToPlatformContext,
+                        pickedPlatform = mainObjectHeaderItemData.objectPlatform,
+                        onPlatformPick = { onValueArchivePick(it) },
+                        theLst = mainObjectHeaderItemData.platformsMenu1.plus(
+                            mainObjectHeaderItemData.platformsMenu2
+                        )
+                    )
+
+                }
             }
 
             Spacer(modifier = Modifier.height(2.dp))
@@ -94,22 +117,23 @@ fun MainObjectHeaderItem(
                     .offset(x = -2.dp)
                     .fillMaxWidth(), horizontalArrangement = Arrangement.Center
             )
-            {
-                if (isBuilder)
+            {/*
                     PlatformArbitrator(
                         navToBuild = navToPlatformBuilder,
                         context = navToPlatformContext,
-                        pickedPlatform = mainObjectHeaderItemData.pickedPlatform,
-                        onPlatformPick = {onPlatformPick(it)},
+                        pickedPlatform = mainObjectHeaderItemData.objectPlatform,
+                        onPlatformPick = {onValueArchivePick(it)},
                         theLst = mainObjectHeaderItemData.platformsMenu1.plus(mainObjectHeaderItemData.platformsMenu2)
                     )
-                else {
-                    ComparedStatisticsSelector(onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()},
+                    */
+
+                    SumObjectItemSelector(isValue = false,onOpenArchiveMenu = {mainObjectHeaderItemData.showArchiveMenu()},
                         sumObjectSourceType = mainObjectHeaderItemData.ComparableObjectSourceType,
                         onCloseArchiveMenu = {mainObjectHeaderItemData.hideArchiveMenu()},
-                        pickedPlatformComparable =mainObjectHeaderItemData.pickedPlatformComparable,platformsMenu1=mainObjectHeaderItemData.platformsMenu1 ,
-                        platformsMenu2=mainObjectHeaderItemData.platformsMenu2, onMyStatItemPick = {onMyStatPick(it)}, onGeneralStatPick = {onGeneralStatPick(it)})
-                }
+                        sumObjName =mainObjectHeaderItemData.archiveComparableName, sumObjectWorkingPlatform = mainObjectHeaderItemData.pickedPlatformComparable, platformsMenu1=mainObjectHeaderItemData.platformsMenu1 ,
+                        platformsMenu2=mainObjectHeaderItemData.platformsMenu2, onUserStatItemPick = {onComparableUserStatPick(it)}, onGeneralStatPick = {onComparableGeneralStatPick(it)},
+                        onArchivePick = {})//on the comaprable we will implemnt archive item pick from the archive menu function...
+
             }
             if (isPlatform) {
                 Spacer(modifier = Modifier.height(2.dp))

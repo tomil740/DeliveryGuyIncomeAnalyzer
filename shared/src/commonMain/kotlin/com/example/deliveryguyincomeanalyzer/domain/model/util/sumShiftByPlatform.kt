@@ -4,6 +4,8 @@ import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.Dat
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.ShiftsSumByType
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObj
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.ShiftTypes
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
@@ -63,7 +65,7 @@ fun sumShiftsByPlatform(shifts : List<ShiftDomain>,dataPerHour:List<DataPerHourD
             (delivers / shiftsSumMorning.size).toInt(),
             dataPerHour = dataPerHour
         )
-        a =ShiftsSumByType(type = "Morning", totalShifts = shiftsSumMorning.size, shiftSum = sumMorning.toShiftSum(), shiftSums = shiftsSumMorning)
+        a =ShiftsSumByType(type = ShiftTypes.Morning, totalShifts = shiftsSumMorning.size, shiftSum = sumMorning.toShiftSum(), shiftSums = shiftsSumMorning)
 
     }
     if(shiftsSumNoon.isNotEmpty()) {
@@ -88,7 +90,7 @@ fun sumShiftsByPlatform(shifts : List<ShiftDomain>,dataPerHour:List<DataPerHourD
             (delivers / shiftsSumNoon.size).toInt(),
             dataPerHour = dataPerHour
         )
-        b = ShiftsSumByType(type = "Noon", totalShifts = shiftsSumNoon.size, shiftSum = sumNoon.toShiftSum(), shiftSums = shiftsSumNoon)
+        b = ShiftsSumByType(type = ShiftTypes.Noon, totalShifts = shiftsSumNoon.size, shiftSum = sumNoon.toShiftSum(), shiftSums = shiftsSumNoon)
 
     }
     if(shiftsSumNight.isNotEmpty()) {
@@ -113,7 +115,7 @@ fun sumShiftsByPlatform(shifts : List<ShiftDomain>,dataPerHour:List<DataPerHourD
             (delivers / shiftsSumNight.size).toInt(),
             dataPerHour = dataPerHour
         )
-        c =  ShiftsSumByType(type = "Night", totalShifts = shiftsSumNight.size, shiftSum = sumNight.toShiftSum(), shiftSums = shiftsSumNight)
+        c =  ShiftsSumByType(type = ShiftTypes.Night, totalShifts = shiftsSumNight.size, shiftSum = sumNight.toShiftSum(), shiftSums = shiftsSumNight)
 
     }
 

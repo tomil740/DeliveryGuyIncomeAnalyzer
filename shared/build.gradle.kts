@@ -45,6 +45,10 @@ kotlin {
             implementation(libs.moko.core)
             implementation(libs.moko.flow)
             implementation(libs.moko.flow.compose)
+
+            //date picker lib
+            implementation(libs.dateTimePicker)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -65,6 +69,8 @@ android {
     }
     dependencies{
         implementation(libs.sqlDelight.android)
+        implementation(libs.dateTimePicker)
+
     }
 }
 sqldelight{

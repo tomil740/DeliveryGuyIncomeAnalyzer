@@ -104,6 +104,7 @@ class RepositoryImpl(db: WorkData):Repository {
         dao.insertShift(
             baseIncome = theShift.baseIncome,
             shiftType = theShift.shiftType,
+            workingPlatform = theShift.workingPlatform,
             time = theShift.time,
             extraIncome = theShift.extraIncome,
             deliveries = theShift.deliveries,
@@ -266,7 +267,7 @@ class RepositoryImpl(db: WorkData):Repository {
     }
 
     override fun getAllShiftsByType(platform: String, theType: Int): List<WorkSumDomain> {
-        val a = dao.getAllShiftDataByType(theType.toLong()).executeAsList()
+        val a = dao.getAllShiftDataByTypeAndWp(shiftType = theType.toLong(), workingPlatform = platform).executeAsList()
         val theResult = mutableListOf<WorkSumDomain>()
         for (i in a) {
             val dataPerHour = dao.getDataPerHourByShiftId(i.shiftId).executeAsList()

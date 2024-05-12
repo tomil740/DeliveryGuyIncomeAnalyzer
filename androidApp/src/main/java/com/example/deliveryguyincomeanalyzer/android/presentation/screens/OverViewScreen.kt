@@ -1,8 +1,8 @@
 package com.example.deliveryguyincomeanalyzer.android.presentation.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -27,31 +26,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
+import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.OnStartNewDeclareDialog
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.PlatformArbitrator
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.SmallObjectItem
-import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.DeclareBuilderScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.ObjectItemScreenClass
 import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.PlatformBuilderScreenClass
+import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.screens.TypedBuilderScreenClass
 import com.example.deliveryguyincomeanalyzer.domain.model.uiSubModels.MainObjectHeaderItemData
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 
 @Composable
 fun OverViewScreen(modifier:Modifier=Modifier) {
 
+    var onNewDeclare by remember { mutableStateOf(false) }
+
     val navigator = LocalNavigator.currentOrThrow
 
+    val bigModifier = if(onNewDeclare){ modifier.fillMaxSize().clickable { onNewDeclare=false }}else{
+        modifier.fillMaxSize()
+    }
+
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier =bigModifier,
         floatingActionButton = {
             SmallFloatingActionButton(
-                onClick = { navigator.push(DeclareBuilderScreenClass()) },
+                onClick = {onNewDeclare=true},
                 modifier = Modifier
                     .offset(y = -20.dp)
                     .size(58.dp),
@@ -63,15 +68,17 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
         }) { paddingValues ->
 
         Box(
-            modifier = modifier.padding(paddingValues)
+            modifier = modifier
+                .padding(paddingValues)
                 .fillMaxWidth()
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 item {
                     MainObjectHeaderItem(onMainObjectClick = { navigator.push(ObjectItemScreenClass()) },
-                        navigator = navigator, navToPlatformBuilder = {}, onPlatformPick = {},
+                        navigator = navigator, navToPlatformBuilder = {}, onValueArchivePick = {},
                         mainObjectHeaderItemData = MainObjectHeaderItemData(
-                            ComparableObjectSourceType =  SumObjectSourceType.Archive)
+                            ComparableObjectSourceType =  SumObjectSourceType.Archive,
+                            valueObjectSourceType = SumObjectSourceType.Archive)
                     )
 
                     Text(
@@ -128,6 +135,10 @@ fun OverViewScreen(modifier:Modifier=Modifier) {
                     }
                 }
             }
+            if(onNewDeclare) {
+                OnStartNewDeclareDialog(navigator = navigator, modifier = Modifier.fillMaxSize())
+            }
+
         }
     }
 }
