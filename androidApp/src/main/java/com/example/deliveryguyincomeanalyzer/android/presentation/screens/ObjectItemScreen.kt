@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,7 +43,7 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ArchiveItem
-import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.BooleanItemsSwitch
+import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.RadioItemsSwitch
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.GraphItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.MainObjectHeaderItem
 import com.example.deliveryguyincomeanalyzer.android.presentation.componeants.ShiftItem
@@ -50,7 +51,10 @@ import com.example.deliveryguyincomeanalyzer.android.presentation.navigation.scr
 import com.example.deliveryguyincomeanalyzer.android.presentation.screens.util.ArchiveMenu
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.GraphState
 import com.example.deliveryguyincomeanalyzer.domain.model.theModels.SumObjectInterface
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectSourceType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.utilMapers.getSumObjectType
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.utilMapers.getSumObjectIntType
 import com.example.deliveryguyincomeanalyzer.domain.model.util.getGeneralSum
 import com.example.deliveryguyincomeanalyzer.domain.model.util.uiSubModelMapers.sumObjectToMainObjectHeaderItemData
 import com.example.deliveryguyincomeanalyzer.presentation.objectItemScreen.ObjectItemStatesAndEvents
@@ -74,8 +78,19 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
 
     //to use the floating expandet item arrow mark , we must implement it in box layout
 
-    var isItem1 by remember { mutableStateOf(false) }
+    var statisticsOrArchive by remember { mutableIntStateOf(2) }
+    var sumObjType by remember { mutableIntStateOf(1) }
 
+    LaunchedEffect(sumObjType) {
+        val theType = getSumObjectType(sumObjType)
+        when(objectItemStatesAndEvents.uiState.objectValueSum.sumObjectSourceType){
+            SumObjectSourceType.Archive->{}//nothing that should not be presented to the user at all}
+            SumObjectSourceType.GeneralStatistics->{
+                objectItemStatesAndEvents.onValueGeneralStatisticsPick(theType)
+                }
+            SumObjectSourceType.MyStatistics->{objectItemStatesAndEvents.onValueUserStatPick(theType)}
+        }
+    }
 
 
     Box(modifier.fillMaxSize()) {
@@ -112,8 +127,8 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                         snackBarHostState.showSnackbar(it, duration = SnackbarDuration.Long)
                     }
                 }
-
                 MainObjectHeaderItem(
+                    //the arcive comparable pick will be on the spesifc matched function
                     mainObjectHeaderItemData = sumObjectToMainObjectHeaderItemData(
                         value = objectItemStatesAndEvents.uiState.objectValueSum,
                         comparable = objectItemStatesAndEvents.uiState.objectComparableSum,
@@ -125,26 +140,48 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                     navigator = navigator,
                     navToPlatformContext = "",
                     onMainObjectClick = { },
-                    onPlatformPick = {
+                    onValueArchivePick = {
+                        //without applying new navigation we will stay on the old initalize function again...
                         navigator.push(ObjectItemScreenClass())
-                        objectItemStatesAndEvents.onValueWorkingPlatform(it)
-                    },
+                        objectItemStatesAndEvents.onValueArchiveTopMenu(it) },
+                    onComparableGeneralStatPick = {objectItemStatesAndEvents.onComparableGeneralStatisticsPick(it)},
+                    onComparableUserStatPick = {objectItemStatesAndEvents.onComparableUserStatPick(it)},
+                    onValueUserStatPick = {
+                        navigator.push(ObjectItemScreenClass())
+                        objectItemStatesAndEvents.onValueUserStatPick(it)},
+                    onValueGeneralStatPick = {
+                        navigator.push(ObjectItemScreenClass())
+                        objectItemStatesAndEvents.onValueGeneralStatisticsPick(it)},
+
                     navToPlatformBuilder = {},
-                    onGeneralStatPick = {objectItemStatesAndEvents.onGeneralStatisticsPick(it)},
-                    onMyStatPick = {objectItemStatesAndEvents.onMyStatPick(it)},
                     modifier = modifier
                 )
 
                     Spacer(modifier = Modifier.height(18.dp))
 
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                        BooleanItemsSwitch(
-                            item1 = "Statistics",
-                            onItem1 = { isItem1 = true },
-                            item2 = "Archive",
-                            onItem2 = { isItem1 = false },
-                            isItem1
-                        )
+                        if(objectItemStatesAndEvents.uiState.objectValueSum.sumObjectSourceType != SumObjectSourceType.Archive){
+                            statisticsOrArchive = 1
+                            RadioItemsSwitch(
+                                item1 = "Month",
+                                onItem1 = { sumObjType=1 },
+                                item2 = "Work Session",
+                                item3 = "Shift",
+                                onItem2 = { sumObjType = 2 },
+                                onItem3 = {sumObjType = it},
+                                pickedItem = getSumObjectIntType(objectItemStatesAndEvents.uiState.objectValueSum.objectType.name),
+                                shiftType = objectItemStatesAndEvents.uiState.objectValueSum.shiftType ?: ""
+                            )
+                        }else {
+                            RadioItemsSwitch(
+                                item1 = "Statistics",
+                                onItem1 = { statisticsOrArchive = 1 },
+                                item2 = "Archive",
+                                onItem2 = { statisticsOrArchive = 2 },
+                                pickedItem = statisticsOrArchive,
+                                shiftType = objectItemStatesAndEvents.uiState.objectValueSum.shiftType ?: ""
+                            )
+                        }
                     }
 
                     Column(
@@ -154,7 +191,7 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        AnimatedVisibility(visible = isItem1) {
+                        AnimatedVisibility(visible = statisticsOrArchive==1) {
                             Column(
                                 modifier
                                     .heightIn(max = 1000.dp)
@@ -262,7 +299,7 @@ fun ObjectItemScreen(initializeObj: SumObjectInterface? =null,
                                 }
                             }
                         }
-                        AnimatedVisibility(visible = !isItem1) {
+                        AnimatedVisibility(visible = statisticsOrArchive==2) {
                             LazyColumn(
                                 modifier.padding(paddingVal),
                                 horizontalAlignment = Alignment.CenterHorizontally

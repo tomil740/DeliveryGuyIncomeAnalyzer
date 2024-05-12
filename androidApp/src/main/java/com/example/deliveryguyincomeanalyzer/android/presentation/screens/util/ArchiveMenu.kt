@@ -17,6 +17,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -91,11 +94,26 @@ fun ArchiveMenu(valueObjectType:SumObjectsType,menuObj:SumObjectInterface,workin
                                 workingPlatformCustomMenu
                             )
                         )
+                        if (valueObjectType == SumObjectsType.AllTimeSum) {
+
+                            Spacer(modifier = Modifier.height(23.dp))
+
+                            Button(onClick = { onObjectPick(menuObj)},
+                                colors = ButtonDefaults.buttonColors().copy(contentColor = MaterialTheme.colorScheme.secondary)) {
+                                Text(
+                                    text = "AllTime Sum",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier
+                                        .padding(start = 12.dp, end = 12.dp),
+                                    color = MaterialTheme.colorScheme.onSecondary
+                                )
+                            }
+                        }
 
                     }
                 }
 
-                Spacer(modifier = Modifier.height(23.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
                 LazyColumn(
                     modifier,

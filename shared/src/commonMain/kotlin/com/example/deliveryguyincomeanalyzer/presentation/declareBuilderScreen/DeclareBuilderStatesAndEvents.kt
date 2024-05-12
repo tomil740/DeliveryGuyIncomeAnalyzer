@@ -7,7 +7,7 @@ data class DeclareBuilderStatesAndEvents(
     val uiState : DeclareBuilderUiState,
     val onAddDeliveryItem: (Float) -> Unit,
     val onDeleteDeliveryItem:(Int)->Unit,
-   // val OnMainPlatformPick: (String)->Unit,
+   // val onValuePlatformPick: (String)->Unit,
     val onSubmitDeclare : ()->Unit,
     val onDeleteDeclare : ()->Unit,
     val saveLiveBuilderState: (LiveBuilderState)->Unit,

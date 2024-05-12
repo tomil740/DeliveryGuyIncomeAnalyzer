@@ -48,7 +48,7 @@ data class WorkSumDomain(
     else{((baseIncome+extraIncome)/subObjects.size)},
             averageTimeSubObj = time/subObjects.size,
             objectType =objectsType,
-            shiftType = null,//because workSumSomain dosnt work with shifts...
+            shiftType = shiftType,//because workSumSomain dosnt work with shifts...
             subObjName = "Shift",
             sumObjectSourceType = sumObjectSourceType
         )

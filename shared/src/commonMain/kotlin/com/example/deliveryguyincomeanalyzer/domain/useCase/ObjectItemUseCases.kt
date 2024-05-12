@@ -6,7 +6,7 @@ data class ObjectItemUseCases(
     val getAllTimeMonthData:GetAllTimeMonthData,
     val getWorkSessionStatisticsData:GetWorkSessionStatisticsData,
     val sumDomainData:SumDomainData,
-    val getShiftTypeStatisticsData:GetShiftTypeStatisticsData,
+    val getShiftStatisticsDataByTypeAndWp:GetShiftStatisticsDataByTypeAndWp,
     val getWorkingPlatformMenu:GetWorkingPlatformMenu,
     val getRemoteWorkDeclare: GetRemoteWorkDeclare,
     val getRemoteDataPerHour: GetRemoteDataPerHour,

@@ -12,8 +12,8 @@ fun sumObjectToMainObjectHeaderItemData(value: SumObjectInterface, comparable:Su
     return MainObjectHeaderItemData(
         objectName = getSumObjectHeader(value.objectType, shiftType = value.shiftType, startTime = value.startTime),
         pickedPlatformComparable = comparable.platform,
-        pickedPlatform= value.platform,
-        archiveComparableName = "${comparable.objectName},${comparable.platform}",
+        objectPlatform= value.platform,
+        archiveComparableName = comparable.objectName,
         showArchiveMenu = {showArchiveMenu()},
         hideArchiveMenu={hideArchiveMenu()},
         mainBarValue=value.totalIncome ,
@@ -28,7 +28,8 @@ fun sumObjectToMainObjectHeaderItemData(value: SumObjectInterface, comparable:Su
         subSumComparableAverageIncome = comparable.averageIncomeSubObj,
         platformsMenu1 = platformOptionMenu1,
         platformsMenu2 = platformOptionMenu2,
-        ComparableObjectSourceType = comparable.sumObjectSourceType
+        ComparableObjectSourceType = comparable.sumObjectSourceType,
+        valueObjectSourceType = value.sumObjectSourceType
 
 
 

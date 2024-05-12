@@ -7,7 +7,7 @@ fun getSumObjectHeader(objectType: SumObjectsType, shiftType: String?, startTime
     println("the object is $objectType")
     return when(objectType){
         SumObjectsType.MonthSum -> {"${startTime.month.name} ${startTime.year}"}
-        SumObjectsType.ShiftSession -> {"${shiftType} ${startTime.dayOfMonth} / ${startTime.month.name}"}
+        SumObjectsType.ShiftSession-> {"${shiftType} ${startTime.dayOfMonth} / ${startTime.month.name}"}
         SumObjectsType.WorkSession->{"${startTime.dayOfMonth} / ${startTime.month.name},"}
         SumObjectsType.YearSum -> {"${startTime.year}"}
         SumObjectsType.AllTimeSum -> {"All Time"}

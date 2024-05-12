@@ -5,12 +5,13 @@ import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollect
 //when it will be compose multiplatform this kind of data will be in the shared module
 data class MainObjectHeaderItemData(
     val objectName : String="",
+    val objectPlatform:String="",
+    val pickedPlatformComparable : String="",
+    val archiveComparableName:String="",
+    val valueObjectSourceType: SumObjectSourceType = SumObjectSourceType.Archive,
     val ComparableObjectSourceType: SumObjectSourceType = SumObjectSourceType.Archive,
     val platformsMenu1:List<WorkingPlatformOptionMenuItem> = listOf(),
     val platformsMenu2:List<WorkingPlatformOptionMenuItem> = listOf(),
-    val pickedPlatform:String="",
-    val pickedPlatformComparable : String="",
-    val archiveComparableName:String="",
     val showArchiveMenu:()->Unit={},
     val hideArchiveMenu:()->Unit={},
     val mainBarValue:Float=0f,

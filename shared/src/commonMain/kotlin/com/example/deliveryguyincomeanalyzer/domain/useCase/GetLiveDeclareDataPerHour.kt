@@ -27,16 +27,16 @@ data class TheTime (
 
     }
 }
-class GetDeclareDataPerHour {
+class GetLiveDeclareDataPerHour {
 
     /*
-    GetDeclareDataPerHour
+    GetLiveDeclareDataPerHour
     * need to make sure we are in the time hours range all of the time
     * need to make sure we will initialize our object in every time change ...
      */
 
     /*
-    GetDeclareDataPerHour  ^
+    GetLiveDeclareDataPerHour  ^
     will get the delivers items of the matched declare and the base income , and return the matched DataPerHourDomain list from them
     * calculate the list of hour range we need to make from the builder data , and translate edge case to compile
       together with some compeatabelity function
@@ -121,7 +121,7 @@ class GetDeclareDataPerHour {
     fun test():List<DataPerHourDomain>{
         /*
         apply at the main activity...
-        val a = GetDeclareDataPerHour().test()
+        val a = GetLiveDeclareDataPerHour().test()
                     val b = GetDeclareShifts().getDeclareShiftsTest()
                     // Log.i("tt", "the ${a.startTime} and ${a.endTime} , and ${a.currentTime}")
 

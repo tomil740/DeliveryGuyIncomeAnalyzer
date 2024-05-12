@@ -3,15 +3,14 @@ package com.example.deliveryguyincomeanalyzer.data.util.mapers
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.DataPerHourDomain
 import database.Shift
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
-import com.example.deliveryguyincomeanalyzer.domain.model.util.getShiftType
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.utilMapers.getSumObjectType
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
 
 //when the workingPlatformId will be an object , it will include all of the hard coded data
 fun shiftDataToShiftDomain(shift: Shift,workingPlatform: String,workPerHour : List<DataPerHourDomain>):ShiftDomain{
     return ShiftDomain(
         workingPlatform = workingPlatform,
-        shiftType = getShiftType(shift.shiftType.toInt()),
+        shiftType = getSumObjectType(shift.shiftType.toInt()),
         startTime = LocalDateTime.parse(shift.startTime),
         endTime = LocalDateTime.parse(shift.endTime),
         time = shift.time.toFloat(),

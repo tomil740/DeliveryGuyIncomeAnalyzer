@@ -4,6 +4,7 @@ import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.Dat
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.ShiftDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.archive_DTO_models.WorkSumDomain
 import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.SumObjectsType
+import com.example.deliveryguyincomeanalyzer.domain.model.util.closeTypesCollections.utilMapers.isShiftSession
 import com.example.deliveryguyincomeanalyzer.domain.useCase.utilFunctions.getDataPerHourSum
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -90,7 +91,7 @@ class SumDomainData() {
 
     }
 
-    fun getAverageDomainObject(a: List<WorkSumDomain>,objectType:SumObjectsType = SumObjectsType.MonthSum,workingPlat: String=""): WorkSumDomain {
+    fun getAverageDomainObject(a: List<WorkSumDomain>,objectType:String = SumObjectsType.MonthSum.name,workingPlat: String=""): WorkSumDomain {
         var time: Float = 0f
         var deliveries: Int = 0
         var baseIncome: Float = 0f
@@ -115,10 +116,22 @@ class SumDomainData() {
                 subObjects = listOf()
             )
         }
-
+        val theObjectType = isShiftSession(objectType)
         var workingPlatform = a[0].workingPlatform
-
+        //for shift time frame data ...
+        var startTime=LocalTime(0, 0)
+        var endTime =  LocalTime(23, 0)
+        if (theObjectType==SumObjectsType.ShiftSession){
+            startTime = a.first().startTime.time
+            endTime = a.first().endTime.time
+        }
         for (i in a) {
+
+            if(i.startTime.time<startTime)
+                startTime = i.startTime.time
+
+            if(i.endTime.time > endTime)
+                endTime = i.endTime.time
 
             if(i.workingPlatform !=workingPlatform)
                 workingPlatform = "Any"
@@ -135,6 +148,7 @@ class SumDomainData() {
                 shifts.add(k)
         }
 
+
         val currentTime = a[0].startTime
         val ab = WorkSumDomain(
             startTime = LocalDateTime(
@@ -142,14 +156,14 @@ class SumDomainData() {
                     year = currentTime.year,
                     month = currentTime.month,
                     dayOfMonth = 1
-                ), time = LocalTime(0, 0)
+                ), time = startTime
             ),
             endTime = LocalDateTime(
                 LocalDate(
                     year = currentTime.year,
                     month = currentTime.month,
-                    dayOfMonth = 28
-                ), time = LocalTime(23, 0)
+                    dayOfMonth = 1
+                ), time =endTime
             ),
             time = time / a.size,
             deliveries = deliveries / a.size,
@@ -158,9 +172,10 @@ class SumDomainData() {
             yearAndMonth = a.get(0).yearAndMonth,
             dayOfMonth = 1,
             workingPlatform = workingPlatform,
-            workPerHour = getDataPerHourSum(dataPerHour),
+            workPerHour = getDataPerHourSum(dataPerHour,startTime=startTime.hour,endTime=endTime.hour),
             shifts = shifts,
-            objectsType = objectType,
+            objectsType = theObjectType,
+            shiftType = if(theObjectType.name != objectType){objectType}else{null},
             subObjects = a
         )
 

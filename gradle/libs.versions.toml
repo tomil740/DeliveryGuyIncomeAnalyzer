@@ -13,6 +13,7 @@ moko = "0.16.1"
 sqlDelight = "1.5.4"
 sqlDelightGradlePluginVersion = "1.5.3"
 kotlinxCoroutines = "1.8.0"
+dateTimePickerV = "1.0.2"
 
 
 
@@ -27,6 +28,8 @@ compose-foundation = { module = "androidx.compose.foundation:foundation", versio
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 cascade-compose ={module = "me.saket.cascade:cascade-compose",version.ref="cascade"}
 androidXCoroutines = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" , version.ref = "kotlinxCoroutines"}
+
+dateTimePicker = {module = "network.chaintech:kmp-date-time-picker",version.ref = "dateTimePickerV"}
 
 
 navigator = {module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyagerVersion" }

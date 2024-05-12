@@ -27,7 +27,6 @@ class DeclareBuilderScreenClass: Screen {
                     )
                 )
             },
-           // OnMainPlatformPick = { a.onDeclareBuilderEvent(DeclareBuilderEvents.OnMainPlatformPick(it)) },
             onSubmitDeclare = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnSubmitDeclare) }
             , saveLiveBuilderState =   {a.onDeclareBuilderEvent(
                 DeclareBuilderEvents.SaveLiveBuilderState(state.liveBuilderState))}
@@ -35,7 +34,7 @@ class DeclareBuilderScreenClass: Screen {
                 DeclareBuilderEvents.GetLiveBuilderState)}
                 ,
             deleteLiveBuilderState = {a.onDeclareBuilderEvent(DeclareBuilderEvents.DeleteLiveBuilderState)},
-            onPickWorkingPlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnComparableWorkingPlatformPick(it))},
+            onPickWorkingPlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnMainPlatformPick(it))},
             onComparablePlatform = {a.onDeclareBuilderEvent(DeclareBuilderEvents.GetComparableMenuAllArchive(it))},
             onArchiveComparableMenuPick = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnArchiveComparableMenuPick(it))},
             onCloseComparableArchiveMenu = {a.onDeclareBuilderEvent(DeclareBuilderEvents.OnCloseComparableMenu)},
@@ -44,8 +43,8 @@ class DeclareBuilderScreenClass: Screen {
         )
         //when picked this item platform, we will navigate to the matched builder
         //in order to not do that on default values we changee it if its
-       // if(b.uiState.liveBuilderState.workingPlatformId == "Add +")
-         //   b.OnMainPlatformPick("Wolt")
+       // if(b.uiState.typeBuilderState.workingPlatformId == "Add +")
+         //   b.onValuePlatformPick("Wolt")
         DeclareLiveBuilderScreen(declareBuilderStatesAndEvents = b, modifier = Modifier)
 
     }

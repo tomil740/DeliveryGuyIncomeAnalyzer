@@ -64,6 +64,7 @@ CREATE TABLE RemoteDataPerHour(
 CREATE TABLE  Shift(
      shiftId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
      shiftType INTEGER NOT NULL,
+     workingPlatform TEXT NOT NULL ,
      startTime TEXT NOT NULL ,
      endTime TEXT NOT NULL ,
      time INTEGER NOT NULL,
@@ -177,6 +178,7 @@ insertWorkDeclare:
         INSERT OR REPLACE
         INTO Shift(
            shiftType,
+           workingPlatform,
            startTime,
            endTime,
            time,
@@ -185,7 +187,7 @@ insertWorkDeclare:
            deliveries,
            workDeclareId
         )
-        VALUES( ?, ?,?,?,  ?,?,?,?);
+        VALUES( ?,?, ?,?,?,  ?,?,?,?);
 
     insertDataPerHour:
            INSERT OR REPLACE
@@ -257,10 +259,10 @@ insertWorkDeclare:
 
     getAllWorkDeclareDataByPlatform:
                 SELECT * FROM WorkDeclare WHERE workingPlatformId = ? ORDER BY workDeclareId DESC;
-
     getAllShiftDataByType:
             SELECT * FROM Shift WHERE shiftType=? ORDER BY shiftId DESC;
-
+    getAllShiftDataByTypeAndWp:
+            SELECT * FROM Shift WHERE shiftType=? AND workingPlatform=? ORDER BY shiftId DESC;
     getMonthData:
           SELECT * FROM WorkDeclare WHERE (month=:theMonth) ORDER BY workDeclareId DESC;
 
