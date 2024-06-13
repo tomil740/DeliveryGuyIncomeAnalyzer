@@ -14,3 +14,20 @@ The app build to be very battery efficient together with simple and clear preps 
 
 <h1>How to use :</h1>
 <img width=100% alt="Screenshot 2024-06-12 at 14 26 06" src = "https://github.com/tomil740/DeliveryGuyAnalyzer/assets/126959122/89f6f3fd-a203-4dcb-b05a-4d2f6c099042">
+To all features click : https://medium.com/@tomil0535264486/delivery-guy-analyzer-full-app-8cf9cdf482a2 
+
+<h1>Under the hood :</h1>
+The project is build to work perfectly in a native level of performance and UX in all ranges of devices from both IOS and Android by implemnitating matched dynamic them components to each platform with match UI components according to material 3 and native look matched material components for native IOS feel the project is build mostly on pure kotlin code and libraries in order of make most of it shred between both platforms
+
+* The project now implemented with KMP without compose multiPlatform because of an bug related to the data structure when merging together with compose multiplatform that will be fixed soon…
+
+<h3>patterns and technologies :</h3>
+- build according to the MVVM and clean architecture    <br>
+- Local db with sqlDelight <br>
+- Di with coin <br>
+- Thread party libs for the user input dialogs and slide pick <br>
+- Material 3 UI components <br>
+- Canvas for the special UI behaviours and objects 
+
+
+
