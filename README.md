@@ -5,8 +5,8 @@ Delivery guy analyzer app help an delivery guy to track its working data and pro
 The app build to be very battery efficient together with simple and clear preps dynamic UI its very convent for the user to track its data and know exactly how much its work worth in actual money at any wanted time frame.
 </p>
 
-<img src="https://github.com/tomil740/DeliveryGuyIncomeAnalyzer/assets/126959122/99da19c4-66cd-484e-9762-dad7e48a384b" width="170" height = "35">
-<img src="https://github.com/tomil740/DeliveryGuyIncomeAnalyzer/assets/126959122/e11a34b0-1466-4787-abca-d65317935b56" width="170" height = "35">
+<img src="https://github.com/tomil740/DeliveryGuyIncomeAnalyzer/assets/126959122/99da19c4-66cd-484e-9762-dad7e48a384b" width="170" >
+<img src="https://github.com/tomil740/DeliveryGuyIncomeAnalyzer/assets/126959122/e11a34b0-1466-4787-abca-d65317935b56" width="170">
 
 <h1>Project demo :</h1>
 <img alt="Screenshot 2024-06-12 at 15 42 20" src="https://github.com/tomil740/DeliveryGuyIncomeAnalyzer/assets/126959122/64704afd-a4c1-48da-a48b-1eda11bd13aa" width=44% height=85%>
