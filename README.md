@@ -14,10 +14,19 @@ The app build to be very battery efficient together with simple and clear preps 
 
 <h1>How to use :</h1>
 <img width=100% alt="Screenshot 2024-06-12 at 14 26 06" src = "https://github.com/tomil740/DeliveryGuyAnalyzer/assets/126959122/89f6f3fd-a203-4dcb-b05a-4d2f6c099042">
-To all features click : https://medium.com/@tomil0535264486/delivery-guy-analyzer-full-app-8cf9cdf482a2 
+
+<h1>Features :</h1>
+<h3>Live conclusions dashboard :</h3>
+<img width="573" alt="Screenshot 2024-06-12 at 15 48 59" src="https://github.com/tomil740/DeliveryGuyAnalyzer/assets/126959122/3159cb26-971b-492e-a1f6-726a0e641987">
+<br>
+The app will calculate in a lazy pattern (only what is shown is calculated) the exact conclusion attribute to any picked pice of data  for example the exact hour wage for picked object while shown the entire month hour wage as well This feature will work in live also when the user entering new data.
+<br>
+<h3>To all features click : https://medium.com/@tomil0535264486/delivery-guy-analyzer-full-app-8cf9cdf482a2 </h3>
 
 <h1>Under the hood :</h1>
-The project is build to work perfectly in a native level of performance and UX in all ranges of devices from both IOS and Android by implemnitating matched dynamic them components to each platform with match UI components according to material 3 and native look matched material components for native IOS feel the project is build mostly on pure kotlin code and libraries in order of make most of it shred between both platforms
+The project is build around the data layer , the data layer build and relations together with the matched use cases let us pull summaries and calculate a lot of data with the minimum amount of resources as possible.
+At this phase the app is working with a place holder for our remote data base but fully implemented to work with it in order to create an potentially 
+Thousands of users statistics in a live updating manner, with minimal resources (full build summary : https://medium.com/@tomil0535264486/delivery-guy-analyzer-full-app-8cf9cdf482a2)
 
 * The project now implemented with KMP without compose multiPlatform because of an bug related to the data structure when merging together with compose multiplatform that will be fixed soon…
 
